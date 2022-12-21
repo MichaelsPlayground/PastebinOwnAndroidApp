@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Pastebin own Android app with jPastebin library"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnMainEnterDeveloperKey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter the Developer key" />
+
+            <Button
+                android:id="@+id/btnMainEnterUserCredentials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enter the user credentials" />
+
+            <Button
+                android:id="@+id/btnMainLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="login to Pastebin" />
+
+            <Button
+                android:id="@+id/btnMainSelectPaste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="select a paste" />
+
+            <Button
+                android:id="@+id/btnMainListPastes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="list your Pastes" />
+
+            <Button
+                android:id="@+id/btnPastePublicNoExpiration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="post public (no expiration)" />
+
+            <Button
+                android:id="@+id/btnPastePublic10Minutes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="post public (10 min. expiration)" />
+
+            <Button
+                android:id="@+id/btnLoginPastebin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="xxx" />
+
+            <Button
+                android:id="@+id/btnViewPastes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="view pastes on Pastebin" />
+
+            <TextView
+                android:id="@+id/tvGetUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="The downloaded data comes here..."
+                android:typeface="monospace" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

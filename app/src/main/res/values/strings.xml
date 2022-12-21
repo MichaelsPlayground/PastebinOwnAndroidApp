@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pastebin own Android app</string>
+    <string name="html_top"><![CDATA[&lt;html&gt;         &lt;head&gt;         &lt;script src=\"https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js\"&gt;&lt;/script&gt;         &lt;script&gt;         addEventListener(\'load\', function (event) { PR.prettyPrint() }, false);         &lt;/script&gt;         &lt;style&gt;             body{overflow-x:hidden;}             pre {               white-space: pre-wrap;               width:100%;               overflow:hidden;               height:auto;               min-height:10px;             }         ol.linenums{     counter-reset:linenumber; } ol.linenums li{     list-style-type:none;     counter-increment:linenumber; } ol.linenums li:before{     content: counter(linenumber);     float:left;     margin-left:-4em;     text-align:right;     width:3em; }          &lt;/style&gt;         &lt;/head&gt;         &lt;body&gt;         &lt;pre class =\"prettyprint linenums\" style=\"border:none;\"&gt;]]></string>
+    <string name="html_bottom"><![CDATA[&lt;/pre&gt;         &lt;/body&gt;         &lt;/html&gt;]]></string>
+</resources>
