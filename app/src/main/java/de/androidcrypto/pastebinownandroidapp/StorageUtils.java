@@ -71,7 +71,7 @@ public class StorageUtils {
 
 
     public StorageUtils(Context context) {
-        Log.d(TAG, "LibsodiumUtils construction");
+        Log.d(TAG, "StorageUtils construction");
         this.mContext = context;
         try {
             masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
