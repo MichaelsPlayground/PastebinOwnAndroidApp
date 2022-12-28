@@ -14,13 +14,14 @@ Project development:
 - View pastes on Pastebin.com
 - Encrypt a string: secure encryption of a string using AES-GCM with key derivation from a passphrase (10000 rounds, HmacSha256)
 - Browse a folder in internal storage: list all folders in internal storage, click on folder and retrieve a file list in this foldert
+- check that an internet connection is available
 
 TODOs:
 - View paste from Pastebin.com
 - View paste from internal storage (unencrypted and encrypted)
 - Delete a paste
-- snychronize between internal storage and Pastebin.com
-- check that an internet connection is available
+- sychronize between internal storage and Pastebin.com
+
 
 build.gradle (app) (check for updates here: https://square.github.io/okhttp/):
 ```plaintext
