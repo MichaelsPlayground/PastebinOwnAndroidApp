@@ -2,6 +2,18 @@
 
 for edit see: https://github.com/Hydrothermal/better-pastebin/blob/master/lib/better-pastebin.js
 
+Project development:
+-Enter the developer key: enter your own developer key, it is stored securely in EncryptedSharedPreferences
+-Enter the user credentials: enter your own user email and password data, it is stored securely in EncryptedSharedPreferences
+-Login to Pastebin.com: login to your Pastebin.com account using the user credentials
+-Select a paste: all your pastes are listed TODO: jump to a PastesViewActivity
+-List your pastes: output of all pastes in a textview
+-Post public paste (no expiration)
+-Post public paste (10 minutes expiration)
+-xxx
+-View pastes on Pastebin.com
+-Encrypt a string: secure encryption of a string using AES-GCM with key derivation from a passphrase (10000 rounds, HmacSha256)
+-Browse a folder in internal storage: list all folders in internal storage, click on folder and retrieve a file list in this foldert
 
 
 
