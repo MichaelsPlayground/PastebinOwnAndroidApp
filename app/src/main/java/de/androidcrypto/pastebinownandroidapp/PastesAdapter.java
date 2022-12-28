@@ -59,7 +59,6 @@ public class PastesAdapter extends RecyclerView.Adapter<PastesAdapter.MyViewHold
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         PasteModel pasteModel = mPasteList.get(position);
 
-        System.out.println("*** onBindViewHolder ***");
         holder.paste_title.setText(pasteModel.getPasteTitle());
         //holder.paste_hits.setText(String.valueOf(pasteModel.getPasteHits()));
         //holder.paste_hits.setText("17");
@@ -93,6 +92,9 @@ public class PastesAdapter extends RecyclerView.Adapter<PastesAdapter.MyViewHold
         holder.paste_link.setText(pasteModel.getPasteUrl());
 
         // todo onRecyclerview click
+
+
+
         /*
         holder.container.setOnClickListener(new View.OnClickListener() {
             @Override

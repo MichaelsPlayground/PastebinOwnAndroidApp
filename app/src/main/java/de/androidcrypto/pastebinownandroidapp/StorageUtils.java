@@ -34,7 +34,7 @@ public class StorageUtils {
     private boolean libraryIsReady = false;
 
     // used for credentials
-    private final String PREFERENCES_FILENAME = "secret_shared_prefs";
+    private final String ENCRYPTED_PREFERENCES_FILENAME = "secret_shared_prefs";
     private final String DEVELOPER_KEY_NAME = "developer_key";
     private final String USER_NAME = "user_name";
     private final String PASSWORD_NAME = "user_password";
@@ -75,11 +75,11 @@ public class StorageUtils {
         this.mContext = context;
         try {
             masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
-            sharedPreferences = setupSharedPreferences(mContext, masterKeyAlias, PREFERENCES_FILENAME);
+            sharedPreferences = setupSharedPreferences(mContext, masterKeyAlias, ENCRYPTED_PREFERENCES_FILENAME);
             libraryIsReady = true;
 
 
-            sharedOwnPreferences = setupSharedPreferences(mContext, masterKeyAlias, PREFERENCES_FILENAME);
+            sharedOwnPreferences = setupSharedPreferences(mContext, masterKeyAlias, ENCRYPTED_PREFERENCES_FILENAME);
             shared3rdPartyPreferences = setupSharedPreferences(mContext, masterKeyAlias, PREFERENCES_FILENAME_3RDPARTY);
             /*
             sharedPreferences = EncryptedSharedPreferences.create(
