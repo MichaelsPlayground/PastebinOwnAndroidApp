@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     Button enterDeveloperKey, enterUserCredentials;
     Button login, selectPaste, listPastes, pastePublicNoExpiration;
 
+    Button encryptAString, mainBrowseFolder;
+
     TextView getUrlData;
 
     PastebinAccount account;
@@ -92,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
 
         listPastes = findViewById(R.id.btnMainListPastes);
         pastePublicNoExpiration = findViewById(R.id.btnPastePublicNoExpiration);
+
+        encryptAString = findViewById(R.id.btnEncryptString);
+        mainBrowseFolder = findViewById(R.id.btnMainBrowseFolder);
+
 
         getUrlData = findViewById(R.id.tvGetUrl);
 
@@ -245,6 +251,25 @@ public class MainActivity extends AppCompatActivity {
                 getUrlData.setText("paste is posted with this key " + pasteKey + " and URL: " + pasteLink);
             }
         });
+
+        // just a service activity for testing
+        encryptAString.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, EncryptionUtil.class);
+                startActivity(intent);
+                // finish();
+            }
+        });
+
+        mainBrowseFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, MainBrowseFolderActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     /**

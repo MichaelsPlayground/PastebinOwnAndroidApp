@@ -4,6 +4,7 @@ import static androidx.core.content.ContextCompat.startActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.tabs.TabLayout;
+
 import org.jpaste.pastebin.PasteExpireDate;
 
 import java.sql.Timestamp;
@@ -23,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class PastesAdapter extends RecyclerView.Adapter<PastesAdapter.MyViewHolder> {
+
+    private static final String TAG = "PastesAdapter";
 
     private ArrayList<PasteModel> mPasteList;
     private Context mContext;
@@ -92,7 +97,17 @@ public class PastesAdapter extends RecyclerView.Adapter<PastesAdapter.MyViewHold
         holder.paste_link.setText(pasteModel.getPasteUrl());
 
         // todo onRecyclerview click
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "recyclerView onClickListener");
+                Log.i(TAG, "pasteUrl: " + mPasteList.get(holder.getAdapterPosition()).getPasteUrl());
+                // TODO change to go to another activity NOT MainActivity
+                Intent intent = new Intent(mContext, MainActivity.class);
+                intent.putExtra("PASTE_URL", mPasteList.get(holder.getAdapterPosition()).getPasteUrl());
+                mContext.startActivity(intent);
+            }
+        });
 
 
         /*

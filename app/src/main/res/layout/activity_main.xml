@@ -79,6 +79,18 @@
                 android:layout_height="wrap_content"
                 android:text="view pastes on Pastebin" />
 
+            <Button
+                android:id="@+id/btnEncryptString"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="encrypt a string" />
+
+            <Button
+                android:id="@+id/btnMainBrowseFolder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="browse a folder in internal storage" />
+
             <TextView
                 android:id="@+id/tvGetUrl"
                 android:layout_width="match_parent"
