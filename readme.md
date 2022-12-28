@@ -28,7 +28,7 @@ implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', ve
 // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
 implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.14.1'
 
-// for encrypted storage
+// for encrypted shared storage
 implementation 'androidx.security:security-crypto:1.0.0'
 // for selectPaste - recyclerview
 implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
