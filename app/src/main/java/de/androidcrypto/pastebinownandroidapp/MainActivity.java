@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button encryptAString, mainBrowseFolder;
 
+    Button checkInternetConnection;
+
     TextView getUrlData;
 
     PastebinAccount account;
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
         encryptAString = findViewById(R.id.btnEncryptString);
         mainBrowseFolder = findViewById(R.id.btnMainBrowseFolder);
+
+        checkInternetConnection = findViewById(R.id.btnCheckInternetConnection);
 
 
         getUrlData = findViewById(R.id.tvGetUrl);
@@ -270,6 +274,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+        checkInternetConnection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "check that an internet connection is available");
+                getUrlData.setText("Internet connection is active: " + isOnline());
+
+
+            }
+        });
+
     }
 
     /**
@@ -314,5 +330,24 @@ public class MainActivity extends AppCompatActivity {
         return response;
     }
 
+
+    /**
+     * This method checks if we can ping to google.com - if yes we do have an active internet connection
+     * returns true if there is an active internet connection
+     * returns false if there is no active internet connection
+     * https://stackoverflow.com/a/45777087/8166854 by sami rahimi
+     */
+    public Boolean isOnline() {
+        try {
+            Process p1 = java.lang.Runtime.getRuntime().exec("ping -c 1 www.google.com");
+            int returnVal = p1.waitFor();
+            boolean reachable = (returnVal==0);
+            return reachable;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

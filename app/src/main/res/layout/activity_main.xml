@@ -91,6 +91,12 @@
                 android:layout_height="wrap_content"
                 android:text="browse a folder in internal storage" />
 
+            <Button
+                android:id="@+id/btnCheckInternetConnection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="check an internet connection" />
+
             <TextView
                 android:id="@+id/tvGetUrl"
                 android:layout_width="match_parent"
