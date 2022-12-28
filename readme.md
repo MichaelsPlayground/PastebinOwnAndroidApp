@@ -3,9 +3,9 @@
 for edit see: https://github.com/Hydrothermal/better-pastebin/blob/master/lib/better-pastebin.js
 
 Project development:
--Enter the developer key: enter your own developer key, it is stored securely in EncryptedSharedPreferences
--Enter the user credentials: enter your own user email and password data, it is stored securely in EncryptedSharedPreferences
--Login to Pastebin.com: login to your Pastebin.com account using the user credentials
+- Enter the developer key: enter your own developer key, it is stored securely in EncryptedSharedPreferences
+- Enter the user credentials: enter your own user email and password data, it is stored securely in EncryptedSharedPreferences
+- Login to Pastebin.com: login to your Pastebin.com account using the user credentials
 -Select a paste: all your pastes are listed TODO: jump to a PastesViewActivity
 -List your pastes: output of all pastes in a textview
 -Post public paste (no expiration)
