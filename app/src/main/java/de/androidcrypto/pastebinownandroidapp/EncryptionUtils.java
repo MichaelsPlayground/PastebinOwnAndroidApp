@@ -46,7 +46,7 @@ public class EncryptionUtils {
         Log.d(TAG, "EncryptionUtils construction");
     }
 
-    private String doEncryptionAesGcmPbkdf2(char[] passphraseChar, byte[] plaintextByte) {
+    public String doEncryptionAesGcmPbkdf2(char[] passphraseChar, byte[] plaintextByte) {
         // generate 32 byte random salt for pbkdf2
         SecureRandom secureRandom = new SecureRandom();
         byte[] salt = new byte[saltLength];
@@ -109,7 +109,7 @@ public class EncryptionUtils {
         return base64Encoding(outputStream.toByteArray());
     }
 
-    private String doDecryptionAesGcmPbkdf2(char[] passphraseChar, String ciphertextBase64) {
+    public String doDecryptionAesGcmPbkdf2(char[] passphraseChar, String ciphertextBase64) {
         // split the complete ciphertext into salt, nonce and ciphertext
         byte[] ciphertextComplete = new byte[0];
         try {

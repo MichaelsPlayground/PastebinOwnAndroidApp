@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="16dp"
     android:orientation="vertical"
+    android:id="@+id/viewMainActivity"
     tools:context=".MainActivity">
 
     <ScrollView
