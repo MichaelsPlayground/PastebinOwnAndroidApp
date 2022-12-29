@@ -1,5 +1,6 @@
 package de.androidcrypto.pastebinownandroidapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ public class SelectPasteActivity extends AppCompatActivity {
         pasteArrayList = new ArrayList<>();
 
         // adding our array list to our recycler view adapter class.
-        pastesAdapter = new PastesAdapter(pasteArrayList, this);
+        pastesAdapter = new PastesAdapter(pasteArrayList, this, userKey);
 
         // setting adapter to our recycler view.
         recyclerView.setAdapter(pastesAdapter);
@@ -75,6 +76,10 @@ public class SelectPasteActivity extends AppCompatActivity {
         getPastes();
         System.out.println("*** getPastes size: " + pasteArrayList.size());
         //pastesAdapter.notifyDataSetChanged();
+
+        // receive the link from intent
+        Intent intent = getIntent();
+        userKey = intent.getStringExtra("USER_KEY");
 
     }
 
@@ -143,7 +148,7 @@ public class SelectPasteActivity extends AppCompatActivity {
             System.out.println("[ END ]");
         }
 
-        pastesAdapter = new PastesAdapter(pasteArrayList, this);
+        pastesAdapter = new PastesAdapter(pasteArrayList, this, userKey);
         pastesAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(pastesAdapter);
     }

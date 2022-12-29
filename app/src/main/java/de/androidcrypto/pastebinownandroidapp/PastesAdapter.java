@@ -31,15 +31,17 @@ public class PastesAdapter extends RecyclerView.Adapter<PastesAdapter.MyViewHold
 
     private ArrayList<PasteModel> mPasteList;
     private Context mContext;
+    private String mUserKey;
 
     //public PastesAdapter(String data) {
-    public PastesAdapter(ArrayList<PasteModel> pasteList, Context context) {
+    public PastesAdapter(ArrayList<PasteModel> pasteList, Context context, String userKey) {
         //super();
 
         System.out.println("### PastesAdapter INIT ###");
         System.out.println("*** PastesAdapter received items: " + pasteList.size());
         this.mPasteList = pasteList;
         this.mContext = context;
+        this.mUserKey = userKey;
     }
 
     @Override
@@ -102,9 +104,9 @@ public class PastesAdapter extends RecyclerView.Adapter<PastesAdapter.MyViewHold
             public void onClick(View view) {
                 Log.i(TAG, "recyclerView onClickListener");
                 Log.i(TAG, "pasteUrl: " + mPasteList.get(holder.getAdapterPosition()).getPasteUrl());
-                // TODO change to go to another activity NOT MainActivity
-                Intent intent = new Intent(mContext, MainActivity.class);
+                Intent intent = new Intent(mContext, ViewPasteActivity.class);
                 intent.putExtra("PASTE_URL", mPasteList.get(holder.getAdapterPosition()).getPasteUrl());
+                intent.putExtra("USER_KEY", mUserKey);
                 mContext.startActivity(intent);
             }
         });

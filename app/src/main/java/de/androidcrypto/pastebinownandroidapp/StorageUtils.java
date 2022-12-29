@@ -44,7 +44,7 @@ public class StorageUtils {
 
 
 
-
+    // old methods/variables
     private SharedPreferences sharedOwnPreferences; // for own keys and encryption
     private SharedPreferences shared3rdPartyPreferences; // for storage of 3rd party public keys
 
@@ -224,6 +224,28 @@ public class StorageUtils {
     public String getUserPassword() {
         return sharedPreferences.getString(PASSWORD_NAME, "");
     }
+
+    /**
+     * This method checks that a developer key, a user name and user password were stored
+     * returns TRUE if all are set or FALSE when one or more are not set
+     */
+
+    private boolean checkForCredentials() {
+        if (!isDeveloperKeyAvailable()) {
+            Log.d(TAG, "the developer key is not available");
+            return false;
+        }
+        if (!isUserNameAvailable()) {
+            Log.d(TAG, "the user name is not available");
+            return false;
+        }
+        if (!isUserPasswordAvailable()) {
+            Log.d(TAG, "the user password is not available");
+            return false;
+        }
+        return true;
+    }
+
 
 
     /**

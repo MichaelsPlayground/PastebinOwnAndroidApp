@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 Intent intent = new Intent(MainActivity.this, SelectPasteActivity.class);
+                //intent.putExtra("USER_KEY", userKey);
                 startActivity(intent);
                 // finish();
             }
@@ -219,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("===============================");
                     sb.append("===============================").append("\n");
                     //System.out.println(resp);
+                    sb.append("paste.getKey: " + paste.getKey()).append("\n");
                     sb.append(getPasteContent(paste.getKey())).append("\n");
                     System.out.println("===============================");
                     sb.append("===============================").append("\n");
