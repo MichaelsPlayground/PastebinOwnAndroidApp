@@ -38,9 +38,14 @@ public class EncryptionUtils {
     private static final String TAG = "EncryptionUtils";
 
     private final int PBKDF2_ITERATIONS = 10000; // fixed as minimum
+    private final String PBKDF2_ALGORITHM = "HmacSHA256"; // used for the PBKDF2-class
+    private final String PBKDF2_KEY_FACTORY = "PBKDF2WithHmacSHA256"; // used for Android key derivation
     private final String ENCRYPTION_TRANSFORMATION_GCM = "AES/GCM/NoPadding";
-    private final int saltLength = 32;
-    private final int nonceLength = 12;
+    private final String ENCRYPTION_KEY_ALGORITHM = "AES";
+    private final int SALT_LENGTH = 32;
+    private final int NONCE_LENGTH = 12;
+    private final int GCM_TAG_LENGTH = 16;
+    private final int ENCRYPTION_KEY_LENGTH = 32; // for AES-256
 
     public EncryptionUtils() {
         Log.d(TAG, "EncryptionUtils construction");
@@ -49,10 +54,10 @@ public class EncryptionUtils {
     public String doEncryptionAesGcmPbkdf2(char[] passphraseChar, byte[] plaintextByte) {
         // generate 32 byte random salt for pbkdf2
         SecureRandom secureRandom = new SecureRandom();
-        byte[] salt = new byte[saltLength];
+        byte[] salt = new byte[SALT_LENGTH];
         secureRandom.nextBytes(salt);
         // generate 12 byte random nonce for AES GCM
-        byte[] nonce = new byte[nonceLength];
+        byte[] nonce = new byte[NONCE_LENGTH];
         secureRandom.nextBytes(nonce);
         byte[] secretKey = new byte[0];
         SecretKeyFactory secretKeyFactory = null;
@@ -66,26 +71,26 @@ public class EncryptionUtils {
                 // uses 3rd party PBKDF function to get PBKDF2withHmacSHA256
                 // PBKDF2withHmacSHA256	is available API 26+
                 byte[] passphraseByte = charArrayToByteArray(passphraseChar);
-                secretKey = PBKDF.pbkdf2("HmacSHA256", passphraseByte, salt, PBKDF2_ITERATIONS, 32);
+                secretKey = PBKDF.pbkdf2(PBKDF2_ALGORITHM, passphraseByte, salt, PBKDF2_ITERATIONS, ENCRYPTION_KEY_LENGTH);
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();
-                Log.e("APP_TAG", "generateAndStoreSecretKeyFromPassphrase error: " + e.toString());
+                Log.e(TAG, "generateAndStoreSecretKeyFromPassphrase error: " + e.toString());
                 return "";
             }
         }
         // api 26+ has HmacSHA256 available
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
-                secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-                KeySpec keySpec = new PBEKeySpec(passphraseChar, salt, PBKDF2_ITERATIONS, 32 * 8);
+                secretKeyFactory = SecretKeyFactory.getInstance(PBKDF2_KEY_FACTORY);
+                KeySpec keySpec = new PBEKeySpec(passphraseChar, salt, PBKDF2_ITERATIONS, ENCRYPTION_KEY_LENGTH * 8);
                 secretKey = secretKeyFactory.generateSecret(keySpec).getEncoded();
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                 e.printStackTrace();
                 return "";
             }
         }
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, "AES");
-        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(16 * 8, nonce);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, ENCRYPTION_KEY_ALGORITHM);
+        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
         Cipher cipher = null;
         byte[] ciphertext = new byte[0];
         try {
@@ -118,9 +123,9 @@ public class EncryptionUtils {
             return "ERROR: The input data (ciphertext) was corrupted.";
         }
         ByteBuffer bb = ByteBuffer.wrap(ciphertextComplete);
-        byte[] salt = new byte[saltLength];
-        byte[] nonce = new byte[nonceLength];
-        byte[] ciphertext = new byte[(ciphertextComplete.length - saltLength - nonceLength)];
+        byte[] salt = new byte[SALT_LENGTH];
+        byte[] nonce = new byte[NONCE_LENGTH];
+        byte[] ciphertext = new byte[(ciphertextComplete.length - SALT_LENGTH - NONCE_LENGTH)];
         bb.get(salt, 0, salt.length);
         bb.get(nonce, 0, nonce.length);
         bb.get(ciphertext, 0, ciphertext.length);
@@ -136,26 +141,26 @@ public class EncryptionUtils {
                 // uses 3rd party PBKDF function to get PBKDF2withHmacSHA256
                 // PBKDF2withHmacSHA256	is available API 26+
                 byte[] passphraseByte = charArrayToByteArray(passphraseChar);
-                secretKey = PBKDF.pbkdf2("HmacSHA256", passphraseByte, salt, PBKDF2_ITERATIONS, 32);
+                secretKey = PBKDF.pbkdf2(PBKDF2_ALGORITHM, passphraseByte, salt, PBKDF2_ITERATIONS, ENCRYPTION_KEY_LENGTH);
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();
-                Log.e("APP_TAG", "generateAndStoreSecretKeyFromPassphrase error: " + e.toString());
+                Log.e(TAG, "generateAndStoreSecretKeyFromPassphrase error: " + e.toString());
                 return "";
             }
         }
         // api 26+ has HmacSHA256 available
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
-                secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-                KeySpec keySpec = new PBEKeySpec(passphraseChar, salt, PBKDF2_ITERATIONS, 32 * 8);
+                secretKeyFactory = SecretKeyFactory.getInstance(PBKDF2_KEY_FACTORY);
+                KeySpec keySpec = new PBEKeySpec(passphraseChar, salt, PBKDF2_ITERATIONS, ENCRYPTION_KEY_LENGTH * 8);
                 secretKey = secretKeyFactory.generateSecret(keySpec).getEncoded();
             } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
                 e.printStackTrace();
                 return "";
             }
         }
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, "AES");
-        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(16 * 8, nonce);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey, ENCRYPTION_KEY_ALGORITHM);
+        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, nonce);
         Cipher cipher = null;
         byte[] decryptedtextByte = new byte[0];
         try {

@@ -50,7 +50,7 @@ public class ViewPasteActivity extends AppCompatActivity {
         // the activity was called directly so it will return to MainActivity
 
         String sampleEncryptionString = "This is a sample encrypted paste.\n" +
-                "I is using an AES-256 encryption in GCM mode.\n" +
+                "This is using an AES-256 encryption in GCM mode.\n" +
                 "The encryption key is derived by running a PBKDF2 key derivation using " +
                 "(at minimum) 10000 iterations and a HMAC256SHA256 algorithm.";
         String samplePassphraseString = "1234";
@@ -69,15 +69,15 @@ public class ViewPasteActivity extends AppCompatActivity {
             if (contentIsEncrypted) {
                 // todo decrypt the data, ask for a passphrase
                 // todo this is simplified code, it strips off the first line only, decryption should follow
-                loadPasswordPressed();
-                content = getEncryptedContent(content);
+                loadPasswordPressed(content);
+                //content = getEncryptedContent(content);
             }
             Log.i(TAG, "Content:\n" + content);
             viewPaste.setText(content);
         }
     }
 
-    private void loadPasswordPressed() {
+    private void loadPasswordPressed(String encryptedContent) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(ViewPasteActivity.this);
         String titleString = "Provide the encryption passphrase";
         String messageString = "\nPlease enter a (minimum) 4 character long passphrase and press on\nOPEN DOCUMENT.";
@@ -115,20 +115,18 @@ public class ViewPasteActivity extends AppCompatActivity {
                     snackbar.show();
                     return;
                 }
-
-
-                // loading the encrypted masterKey from internal storage
-                //yte[] encryptedMasterKey = loadEncryptedMasterKey(encryptedMasterKeyFileName);
-                boolean internalEncryptedMasterKeyAvailable = true;// = Encryption.decryptMasterKeyAesGcmPbkdf2InternallyFromBase64(encryptedMasterKey, oldPassword);
-                if (!internalEncryptedMasterKeyAvailable) {
-                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "The passphrase was wrong", Snackbar.LENGTH_LONG);
+                EncryptionUtils encryptionUtils = new EncryptionUtils();
+                String ciphertext = getEncryptedContent(encryptedContent);
+                String decryptedString = encryptionUtils.doDecryptionAesGcmPbkdf2(oldPassword, ciphertext);
+                if (TextUtils.isEmpty(decryptedString)) {
+                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not decrypt (wron passphrase ?)", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(ViewPasteActivity.this, R.color.red));
                     snackbar.show();
                     return;
+                } else {
+                    viewPaste.setText(decryptedString);
+                    return;
                 }
-                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Die App ist nun bereit", Snackbar.LENGTH_SHORT);
-                snackbar.setBackgroundTint(ContextCompat.getColor(ViewPasteActivity.this, R.color.green));
-                snackbar.show();
             }
         });
         alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -137,6 +135,7 @@ public class ViewPasteActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Can not open the encrypted document", Snackbar.LENGTH_LONG);
                 snackbar.setBackgroundTint(ContextCompat.getColor(ViewPasteActivity.this, R.color.red));
                 snackbar.show();
+                return;
             }
         });
         alertDialog.show();
