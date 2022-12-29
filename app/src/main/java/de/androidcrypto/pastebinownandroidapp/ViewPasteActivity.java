@@ -20,6 +20,7 @@ public class ViewPasteActivity extends AppCompatActivity {
 
     private static final String API_GET_RAW_CONTENT = "https://pastebin.com/api/api_raw.php";
     private static final String API_PASTE_CONTENT_KEY = "https://pastebin.com/";
+    private static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,12 @@ public class ViewPasteActivity extends AppCompatActivity {
             String headerString = "Paste from URL " + pasteUrl;
             header.setText(headerString);
             String content = getPasteContent(userKey, pasteUrl);
+            boolean contentIsEncrypted = isContentEncrypted(content);
+            if (contentIsEncrypted) {
+                // todo decrypt the data, ask for a passphrase
+                // todo this is simplified code, it strips off the first line only, decryption should follow
+                content = getEncryptedContent(content);
+            }
             Log.i(TAG, "Content:\n" + content);
             viewPaste.setText(content);
         }
@@ -65,5 +72,26 @@ public class ViewPasteActivity extends AppCompatActivity {
             return "";
         }
         return response;
+    }
+
+
+    private boolean isContentEncrypted(String content) {
+        System.out.println("************");
+        System.out.println(content.substring(0, ENCRYPTED_CONTENT.length()));
+        System.out.println("************");
+        if (content.substring(0, ENCRYPTED_CONTENT.length()).equals(ENCRYPTED_CONTENT)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This method strips off the first line of content
+     * @param content
+     * @return the content excluding the first line
+     */
+    private String getEncryptedContent (String content) {
+        return content.substring(content.indexOf('\n')+1);
     }
 }
