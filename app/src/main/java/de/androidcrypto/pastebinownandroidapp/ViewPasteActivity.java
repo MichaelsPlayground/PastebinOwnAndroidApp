@@ -114,6 +114,9 @@ public class ViewPasteActivity extends AppCompatActivity {
                 }
                 EncryptionUtils encryptionUtils = new EncryptionUtils();
                 String ciphertext = getEncryptedContent(encryptedContent);
+
+                // todo see InternalStorageActivity - loadEncryptedPaste
+
                 String decryptedString = encryptionUtils.doDecryptionAesGcmPbkdf2(oldPassword, ciphertext);
                 if (TextUtils.isEmpty(decryptedString)) {
                     Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not decrypt (wrong passphrase ?)", Snackbar.LENGTH_LONG);
