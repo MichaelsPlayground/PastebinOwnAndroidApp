@@ -83,13 +83,10 @@ public class ViewPasteActivity extends AppCompatActivity {
         String messageString = "\nPlease enter a (minimum) 4 character long passphrase and press on\nOPEN DOCUMENT.";
         String hintString = "  passphrase";
 
-
         alertDialog.setTitle(titleString);
-        String message = messageString;
-        alertDialog.setMessage(message);
+        alertDialog.setMessage(messageString);
         final EditText oldPassphrase = new EditText(ViewPasteActivity.this);
         oldPassphrase.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.round_rect_shape, null));
-        //oldPassphrase.setBackground(getResources().getDrawable(R.drawable.round_rect_shape));
         oldPassphrase.setHint(hintString);
         oldPassphrase.setPadding(50, 20, 50, 20);
         LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
@@ -119,7 +116,7 @@ public class ViewPasteActivity extends AppCompatActivity {
                 String ciphertext = getEncryptedContent(encryptedContent);
                 String decryptedString = encryptionUtils.doDecryptionAesGcmPbkdf2(oldPassword, ciphertext);
                 if (TextUtils.isEmpty(decryptedString)) {
-                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not decrypt (wron passphrase ?)", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not decrypt (wrong passphrase ?)", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(ViewPasteActivity.this, R.color.red));
                     snackbar.show();
                     return;

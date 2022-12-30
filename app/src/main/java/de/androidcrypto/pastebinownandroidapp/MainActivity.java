@@ -283,8 +283,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i(TAG, "check that an internet connection is available");
                 getUrlData.setText("Internet connection is active: " + isOnline());
-
-
             }
         });
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -15,26 +17,26 @@ public class InternalStorageUtils {
     /**
      * This class is responsible for reading and writing files from and to internal storage
      * There are two base folders for the storage
-     * unencrypted files: storage/unencrypted/
-     * encrypted files: storage/encrypted
+     * unencrypted files: pastes/unencrypted/
+     * encrypted files: pastes/encrypted
      */
 
     private static final String TAG = "InternalStorageUtils";
     public static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT";
     public static final String UNENCRYPTED_CONTENT = "UNENCRYPTED CONTENT";
-    public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:";
+    private static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:"; // DO NOT CHANGE
     private final String BASE_FOLDER = "pastes";
     private final String UNENCRYPTED_FOLDER = "unencrypted";
     private final String ENCRYPTED_FOLDER = "encrypted";
 
     Context mContext;
 
-    public InternalStorageUtils(Context mContext) {
+    public InternalStorageUtils(@NonNull Context mContext) {
         Log.d(TAG, "InternalStorageUtils constructed");
         this.mContext = mContext;
     }
 
-    public boolean writePasteInternal(String filename, String content, String timestamp, boolean contentIsEncrypted) {
+    public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted) {
         if (TextUtils.isEmpty(filename)) {
             Log.e(TAG, "storage aborted, filename is empty");
             return false;
@@ -66,7 +68,7 @@ public class InternalStorageUtils {
                 contentHeader + timestampString + content);
     }
 
-    public String loadPasteInternal(String filename, boolean contentIsEncrypted) {
+    public String loadPasteInternal(@NonNull String filename, @NonNull boolean contentIsEncrypted) {
         if (TextUtils.isEmpty(filename)) {
             Log.e(TAG, "load from storage aborted, filename is empty");
             return "";
@@ -83,7 +85,7 @@ public class InternalStorageUtils {
         return readFromInternalStorage(filePath.getAbsolutePath(), filename);
     }
 
-    private boolean writeToInternalStorage(File basePath, String filename, String content) {
+    private boolean writeToInternalStorage(@NonNull File basePath, @NonNull String filename, @NonNull String content) {
         if (TextUtils.isEmpty(basePath.getAbsolutePath())) {
             Log.e(TAG, "storage aborted, path is empty");
             return false;
@@ -114,7 +116,7 @@ public class InternalStorageUtils {
         return true;
     }
 
-    private String readFromInternalStorage (String path, String filename) {
+    private String readFromInternalStorage (@NonNull String path, @NonNull String filename) {
         if (TextUtils.isEmpty(path)) {
             Log.e(TAG, "read from storage aborted, path is empty");
             return "";
@@ -144,4 +146,28 @@ public class InternalStorageUtils {
         }
     }
 
+    /**
+     * This method returns the timestamp from the (stripped) content
+     * The full content contains a header line that needs to get stripped of before
+     * using this method
+     * The timestamp is a string behind the text 'TIMESTAMP CONTENT:'
+     * @param content
+     * @return the timestamp String
+     */
+    public String returnTimestampFromContent(@NonNull String content) {
+        System.out.println("*** content:" + content + "###");
+        int indexEnd = content.indexOf('\n');
+        // check for indexEnd = -1 means there is no line break
+        if (indexEnd == -1) return "";
+        int indexStartBeginner = content.indexOf(TIMESTAMP_CONTENT);
+        if (indexStartBeginner != 0) {
+            Log.e(TAG, "there is no timestamp in content");
+            return "";
+        }
+
+        System.out.println("*** indexEnd: " + indexEnd);
+        System.out.println("*** indexBeginner: " + indexStartBeginner);
+
+        return content.substring(indexStartBeginner + TIMESTAMP_CONTENT.length(), indexEnd);
+    }
 }
