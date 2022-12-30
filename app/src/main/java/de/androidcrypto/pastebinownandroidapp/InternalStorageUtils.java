@@ -24,7 +24,7 @@ public class InternalStorageUtils {
     private static final String TAG = "InternalStorageUtils";
     public static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT";
     public static final String UNENCRYPTED_CONTENT = "UNENCRYPTED CONTENT";
-    private static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:"; // DO NOT CHANGE
+    public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:"; // DO NOT CHANGE
     private final String BASE_FOLDER = "pastes";
     private final String UNENCRYPTED_FOLDER = "unencrypted";
     private final String ENCRYPTED_FOLDER = "encrypted";

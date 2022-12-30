@@ -27,13 +27,37 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/swSendPastePrivate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:checked="false"
+                android:clickable="true"
+                android:text="send a private paste"
+                android:textSize="18sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/swSendPasteEncrypted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:checked="false"
+                android:clickable="true"
+                android:text="send the paste encrypted"
+                android:textSize="18sp" />
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etSendPasteTitleLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
                 android:hint="enter the paste title"
                 android:visibility="visible"
@@ -64,7 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
                 android:hint="enter the paste text"
                 android:visibility="visible"
@@ -95,7 +119,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="submit" />
 
