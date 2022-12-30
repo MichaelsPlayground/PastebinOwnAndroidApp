@@ -98,6 +98,12 @@
                 android:layout_height="wrap_content"
                 android:text="check an internet connection" />
 
+            <Button
+                android:id="@+id/btnInternalStorageActivity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="internal storage activity" />
+
             <TextView
                 android:id="@+id/tvGetUrl"
                 android:layout_width="match_parent"

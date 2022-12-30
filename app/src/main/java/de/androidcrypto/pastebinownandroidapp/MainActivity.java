@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button encryptAString, mainBrowseFolder;
 
-    Button checkInternetConnection;
+    Button checkInternetConnection, internalStorageActivity;
 
     TextView getUrlData;
 
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         mainBrowseFolder = findViewById(R.id.btnMainBrowseFolder);
 
         checkInternetConnection = findViewById(R.id.btnCheckInternetConnection);
-
+        internalStorageActivity = findViewById(R.id.btnInternalStorageActivity);
 
         getUrlData = findViewById(R.id.tvGetUrl);
 
@@ -285,6 +285,16 @@ public class MainActivity extends AppCompatActivity {
                 getUrlData.setText("Internet connection is active: " + isOnline());
 
 
+            }
+        });
+
+        internalStorageActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "internalStorageActivity");
+                Intent intent = new Intent(MainActivity.this, InternalStorageActivity.class);
+                startActivity(intent);
+                //finish();
             }
         });
 
