@@ -134,12 +134,26 @@ public class SendPasteActivity extends AppCompatActivity {
                 Snackbar snackbar = Snackbar.make(view, "The paste was sent successfully to Pastebin.com", Snackbar.LENGTH_SHORT);
                 snackbar.setBackgroundTint(ContextCompat.getColor(SendPasteActivity.this, R.color.green));
                 snackbar.show();
+
+                // todo work on encrypted pastes
+
+                // now save the paste in internal storage
+                InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
+                // write an unencrypted string
+                boolean writeSuccess = internalStorageUtils.writePasteInternal(
+                        pasteTitleString,
+                        pasteTextString,
+                        String.valueOf(timestamp),
+                        pasteEncrypted.isChecked());
+                Log.i(TAG, "writeSuccess: " + writeSuccess);
+
                 // clean data
                 pasteTitle.setText("");
                 pasteText.setText("");
-
             }
         });
 
     }
+
+
 }

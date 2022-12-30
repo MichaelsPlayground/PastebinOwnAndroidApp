@@ -35,7 +35,7 @@ public class InternalStorageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.i(TAG, "save");
 
-                String filename = "test.txt";
+                String filename = "test";
                 String sampleUnencryptedString = "This is a sample UNencrypted paste.\n" +
                         "This is using an AES-256 encryption in GCM mode.\n" +
                         "The encryption key is derived by running a PBKDF2 key derivation using " +
@@ -77,7 +77,7 @@ public class InternalStorageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "load unencrypted");
-                String filename = "test.txt";
+                String filename = "test";
                 InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
                 String contentFullString =internalStorageUtils.loadPasteInternal(filename, false);
                 content.setText(getRawContent2Lines(contentFullString));
@@ -106,7 +106,7 @@ public class InternalStorageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "load encrypted");
-                String filename = "test.txt";
+                String filename = "test";
                 InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
                 String encryptedContent = internalStorageUtils.loadPasteInternal(filename, true);
                 EncryptionUtils encryptionUtils = new EncryptionUtils();

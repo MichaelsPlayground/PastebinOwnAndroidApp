@@ -36,6 +36,19 @@ public class InternalStorageUtils {
         this.mContext = mContext;
     }
 
+    /**
+     * This method generates a filenameString from a paste title where all blanks
+     * are converted to '_' and a ending '.txt' is added
+     */
+    private String getFilenameString(@NonNull String pasteTitle) {
+        if (TextUtils.isEmpty(pasteTitle)) {
+            Log.e(TAG, "the paste title is empty so i can not get a file name");
+            return "";
+        }
+        String tempFilename = pasteTitle.replaceAll(" ", "_");
+        return tempFilename + ".txt";
+    }
+
     public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted) {
         if (TextUtils.isEmpty(filename)) {
             Log.e(TAG, "storage aborted, filename is empty");
@@ -64,7 +77,7 @@ public class InternalStorageUtils {
         String timestampString = TIMESTAMP_CONTENT + timestamp + "\n";
         return writeToInternalStorage(
                 filePath,
-                filename,
+                getFilenameString(filename),
                 contentHeader + timestampString + content);
     }
 
@@ -82,7 +95,7 @@ public class InternalStorageUtils {
         } else {
             filePath = new File(basePath, UNENCRYPTED_FOLDER);
         }
-        return readFromInternalStorage(filePath.getAbsolutePath(), filename);
+        return readFromInternalStorage(filePath.getAbsolutePath(), getFilenameString(filename));
     }
 
     private boolean writeToInternalStorage(@NonNull File basePath, @NonNull String filename, @NonNull String content) {
