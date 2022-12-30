@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button enterDeveloperKey, enterUserCredentials;
     Button login, selectPaste, listPastes, pastePublicNoExpiration;
+    Button sendPaste;
 
     Button encryptAString, mainBrowseFolder;
 
@@ -95,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         selectPaste = findViewById(R.id.btnMainSelectPaste);
 
         listPastes = findViewById(R.id.btnMainListPastes);
+        sendPaste = findViewById(R.id.btnMainSendPaste);
+
         pastePublicNoExpiration = findViewById(R.id.btnPastePublicNoExpiration);
 
         encryptAString = findViewById(R.id.btnEncryptString);
@@ -227,6 +230,15 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("[ END ]");
                 }
                 getUrlData.setText(sb.toString());
+            }
+        });
+
+        sendPaste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SendPasteActivity.class);
+                startActivity(intent);
+                //finish();
             }
         });
 

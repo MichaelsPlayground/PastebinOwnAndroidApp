@@ -15,6 +15,13 @@
         android:theme="@style/Theme.HttpsWithOkhttps"
         tools:targetApi="31">
         <activity
+            android:name=".SendPasteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".InternalStorageActivity"
             android:exported="false">
             <meta-data

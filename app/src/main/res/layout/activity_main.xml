@@ -54,7 +54,13 @@
                 android:id="@+id/btnMainListPastes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="list your Pastes" />
+                android:text="list your pastes" />
+
+            <Button
+                android:id="@+id/btnMainSendPaste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="send a paste" />
 
             <Button
                 android:id="@+id/btnPastePublicNoExpiration"
