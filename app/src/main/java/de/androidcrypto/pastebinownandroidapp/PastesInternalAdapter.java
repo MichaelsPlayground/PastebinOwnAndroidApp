@@ -57,7 +57,7 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         //PasteModel pasteModel = mPasteList.get(position);
         String filename = mPasteList.get(position);
-
+        System.out.println("** onBindViewHolder pos " + position + " fn " + filename);
         holder.paste_title.setText(filename);
         //holder.paste_hits.setText(String.valueOf(pasteModel.getPasteHits()));
         //holder.paste_hits.setText("17");

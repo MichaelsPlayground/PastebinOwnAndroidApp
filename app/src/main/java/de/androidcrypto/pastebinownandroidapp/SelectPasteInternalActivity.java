@@ -82,7 +82,13 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
         InternalStorageUtils internalStorageUtils = new InternalStorageUtils(context);
         pastesArrayList = internalStorageUtils.listPastesInternal(listEncryptedFiles);
         Log.i(TAG, "pastesArrayList contains entries: " + pastesArrayList.size());
+        System.out.println("getInternalPastes, filenames");
+        for (int i = 0; i < pastesArrayList.size(); i++) {
+            System.out.println("pos " + i + " fn: " + pastesArrayList.get(i));
+        }
         pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, context, listEncrypted);
+        pastesInternalAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(pastesInternalAdapter);
     }
 
 }
