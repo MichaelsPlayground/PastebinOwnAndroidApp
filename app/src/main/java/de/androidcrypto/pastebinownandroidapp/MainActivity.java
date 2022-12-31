@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button enterDeveloperKey, enterUserCredentials;
     Button login, selectPaste, listPastes, pastePublicNoExpiration;
+    Button selectInternalPaste;
     Button sendPaste;
 
     Button encryptAString, mainBrowseFolder;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         enterUserCredentials = findViewById(R.id.btnMainEnterUserCredentials);
         login = findViewById(R.id.btnMainLogin);
         selectPaste = findViewById(R.id.btnMainSelectPaste);
+        selectInternalPaste = findViewById(R.id.btnMainSelectInternalPaste);
 
         listPastes = findViewById(R.id.btnMainListPastes);
         sendPaste = findViewById(R.id.btnMainSendPaste);
@@ -179,6 +181,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        selectInternalPaste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "select a paste (internal)");
+                if (TextUtils.isEmpty(userKey)) {
+                    Snackbar snackbar = Snackbar.make(view, "Please login to proceed, aborted", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
+                    snackbar.show();
+                    //Toast.makeText(MainActivity.this, "Please login to proceed", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(MainActivity.this, SelectPasteInternalActivity.class);
+                //intent.putExtra("USER_KEY", userKey);
+                startActivity(intent);
+                // finish();
+            }
+        });
 
         listPastes.setOnClickListener(new View.OnClickListener() {
             @Override

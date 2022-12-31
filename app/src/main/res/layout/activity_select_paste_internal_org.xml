@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="?android:attr/detailsElementBackground"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".SelectPasteInternalActivity">
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/swSPIPrivate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:checked="false"
+        android:clickable="true"
+        android:text="select a private paste"
+        android:textSize="18sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSPI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:visibility="visible" />
+
+</RelativeLayout>

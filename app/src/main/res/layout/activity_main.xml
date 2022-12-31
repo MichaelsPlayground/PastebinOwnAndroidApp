@@ -51,6 +51,12 @@
                 android:text="select a paste" />
 
             <Button
+                android:id="@+id/btnMainSelectInternalPaste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="select a paste (internal)" />
+
+            <Button
                 android:id="@+id/btnMainListPastes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

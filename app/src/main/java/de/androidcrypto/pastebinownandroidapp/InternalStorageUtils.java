@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class InternalStorageUtils {
 
@@ -98,6 +99,19 @@ public class InternalStorageUtils {
         return readFromInternalStorage(filePath.getAbsolutePath(), getFilenameString(filename));
     }
 
+    public ArrayList<String> listPastesInternal(@NonNull boolean contentIsEncrypted) {
+        File basePath = new File(BASE_FOLDER);
+        // create the directory
+        //boolean basePathExists = basePath.mkdirs();
+        File filePath;
+        if (contentIsEncrypted) {
+            filePath = new File(basePath, ENCRYPTED_FOLDER);
+        } else {
+            filePath = new File(basePath, UNENCRYPTED_FOLDER);
+        }
+        return listInternalFiles(filePath.getAbsolutePath());
+    }
+
     private boolean writeToInternalStorage(@NonNull File basePath, @NonNull String filename, @NonNull String content) {
         if (TextUtils.isEmpty(basePath.getAbsolutePath())) {
             Log.e(TAG, "storage aborted, path is empty");
@@ -177,10 +191,26 @@ public class InternalStorageUtils {
             Log.e(TAG, "there is no timestamp in content");
             return "";
         }
-
-        System.out.println("*** indexEnd: " + indexEnd);
-        System.out.println("*** indexBeginner: " + indexStartBeginner);
-
+        // System.out.println("*** indexEnd: " + indexEnd);
+        // System.out.println("*** indexBeginner: " + indexStartBeginner);
         return content.substring(indexStartBeginner + TIMESTAMP_CONTENT.length(), indexEnd);
+    }
+
+    /**
+     * This method lists all filenames and returns a ArrayList of files
+     * @param path is the folder that is listed
+     * @return
+     */
+    private ArrayList<String> listInternalFiles(@NonNull String path) {
+        //ArrayList<String> tempList = new ArrayList<>();
+        File internalStorageDir = new File(mContext.getFilesDir(), path);
+        File[] files = internalStorageDir.listFiles();
+        ArrayList<String> fileNames = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                fileNames.add(files[i].getName());
+            }
+        }
+        return fileNames;
     }
 }
