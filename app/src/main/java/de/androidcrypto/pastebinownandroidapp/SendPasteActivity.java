@@ -167,7 +167,7 @@ public class SendPasteActivity extends AppCompatActivity {
                             String.valueOf(timestamp),
                             false,
                             pastePrivate.isChecked());
-                    Log.i(TAG, "writeSuccess: " + writeSuccess);
+                    Log.i(TAG, "unencrypted writeSuccess: " + writeSuccess);
 
                     // clean data
                     pasteTitle.setText("");
@@ -254,9 +254,9 @@ public class SendPasteActivity extends AppCompatActivity {
                             pasteTitleString,
                             pasteTextString,
                             timestampString,
-                            false,
+                            true,
                             pasteIsPrivate);
-                    Log.i(TAG, "writeSuccess: " + writeSuccess);
+                    Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
 
                     // clean data
                     pasteTitle.setText("");

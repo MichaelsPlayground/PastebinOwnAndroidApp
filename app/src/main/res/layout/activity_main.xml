@@ -44,11 +44,24 @@
                 android:layout_height="wrap_content"
                 android:text="login to Pastebin" />
 
+            <TextView
+                android:id="@+id/tvGetUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="The downloaded data comes here..."
+                android:typeface="monospace" />
+
             <Button
                 android:id="@+id/btnMainSelectPaste"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="select a paste" />
+
+            <Button
+                android:id="@+id/btnMainSelectInternalSimplePaste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="select a paste (simple internal)" />
 
             <Button
                 android:id="@+id/btnMainSelectInternalPaste"
@@ -115,13 +128,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="internal storage activity" />
-
-            <TextView
-                android:id="@+id/tvGetUrl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="The downloaded data comes here..."
-                android:typeface="monospace" />
 
         </LinearLayout>
 

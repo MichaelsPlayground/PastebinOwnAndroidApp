@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button enterDeveloperKey, enterUserCredentials;
     Button login, selectPaste, listPastes, pastePublicNoExpiration;
-    Button selectInternalPaste;
+    Button selectInternalPaste, selectInternalSimplePaste;
     Button sendPaste;
 
     Button encryptAString, mainBrowseFolder;
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         login = findViewById(R.id.btnMainLogin);
         selectPaste = findViewById(R.id.btnMainSelectPaste);
         selectInternalPaste = findViewById(R.id.btnMainSelectInternalPaste);
+        selectInternalSimplePaste = findViewById(R.id.btnMainSelectInternalSimplePaste);
 
         listPastes = findViewById(R.id.btnMainListPastes);
         sendPaste = findViewById(R.id.btnMainSendPaste);
@@ -175,6 +176,24 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 Intent intent = new Intent(MainActivity.this, SelectPasteActivity.class);
+                //intent.putExtra("USER_KEY", userKey);
+                startActivity(intent);
+                // finish();
+            }
+        });
+
+        selectInternalSimplePaste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "select a paste (simple internal)");
+                if (TextUtils.isEmpty(userKey)) {
+                    Snackbar snackbar = Snackbar.make(view, "Please login to proceed, aborted", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
+                    snackbar.show();
+                    //Toast.makeText(MainActivity.this, "Please login to proceed", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(MainActivity.this, SelectPasteInternalSimpleActivity.class);
                 //intent.putExtra("USER_KEY", userKey);
                 startActivity(intent);
                 // finish();

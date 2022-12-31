@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relativeLayout"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="?android:attr/detailsElementBackground"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".SelectPasteInternalActivity">
+    tools:context=".SelectPasteInternalSimpleActivity">
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/swSPIEncrypted"

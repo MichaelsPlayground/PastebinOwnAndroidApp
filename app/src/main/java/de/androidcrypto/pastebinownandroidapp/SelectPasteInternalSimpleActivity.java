@@ -1,14 +1,8 @@
 package de.androidcrypto.pastebinownandroidapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,24 +10,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import org.jpaste.pastebin.PastebinLink;
-import org.jpaste.pastebin.account.PastebinAccount;
-import org.jpaste.pastebin.exceptions.LoginException;
-import org.jpaste.pastebin.exceptions.ParseException;
-
-import java.io.File;
 import java.util.ArrayList;
 
-public class SelectPasteInternalActivity extends AppCompatActivity {
-    final String TAG = "selectPasteInternalActivity";
+public class SelectPasteInternalSimpleActivity extends AppCompatActivity {
+    final String TAG = "selectPasteInternalSimpleActivity";
 
     SwitchMaterial pasteEncrypted;
 
     RecyclerView recyclerView;
     //androidx.swiperefreshlayout.widget.SwipeRefreshLayout srl;
-    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SelectPasteInternalActivity.this);
+    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SelectPasteInternalSimpleActivity.this);
 
-    private PastesInternalAdapter pastesInternalAdapter;
+    private PastesInternalSimpleAdapter pastesInternalSimpleAdapter;
     //private ArrayList<PasteModel> pasteArrayList;
 
     private boolean listEncrypted = false; // default
@@ -43,7 +31,7 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_paste_internal);
+        setContentView(R.layout.activity_select_paste_internal_simple);
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -63,18 +51,10 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // adding our array list to our recycler view adapter class.
-        pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, this, listEncrypted);
+        pastesInternalSimpleAdapter = new PastesInternalSimpleAdapter(pastesArrayList, this, listEncrypted);
         // setting adapter to our recycler view.
-        recyclerView.setAdapter(pastesInternalAdapter);
+        recyclerView.setAdapter(pastesInternalSimpleAdapter);
         getInternalPastes(this, listEncrypted);
-
-        pasteEncrypted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                listEncrypted = pasteEncrypted.isChecked();
-                getInternalPastes(getApplicationContext(), listEncrypted);
-            }
-        });
     }
 
     private void getInternalPastes(Context context, boolean listEncryptedFiles) {
@@ -87,9 +67,9 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
         for (int i = 0; i < pastesArrayList.size(); i++) {
             System.out.println("pos " + i + " fn: " + pastesArrayList.get(i));
         }
-        pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, context, listEncrypted);
-        pastesInternalAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(pastesInternalAdapter);
+        pastesInternalSimpleAdapter = new PastesInternalSimpleAdapter(pastesArrayList, context, listEncrypted);
+        pastesInternalSimpleAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(pastesInternalSimpleAdapter);
     }
 
 }

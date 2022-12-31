@@ -50,6 +50,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".SelectPasteInternalSimpleActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".EnterDeveloperKeyActivity"
             android:exported="false">
             <meta-data

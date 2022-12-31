@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class InternalStorageUtils {
 
@@ -40,8 +41,8 @@ public class InternalStorageUtils {
     }
 
     /**
-     * This method generates a filenameString from a paste title where all blanks
-     * are converted to '_' and a ending '.txt' is added
+     * This method generates a readable filenameString from a fileName from internal storage
+     * All '_' are converted to ' ' and a ending '.txt' is removed
      */
     private String getFilenameString(@NonNull String pasteTitle) {
         if (TextUtils.isEmpty(pasteTitle)) {
@@ -50,6 +51,20 @@ public class InternalStorageUtils {
         }
         String tempFilename = pasteTitle.replaceAll(" ", "_");
         return tempFilename + ".txt";
+    }
+
+    /**
+     * This method generates a filenameString from a paste title where all blanks
+     * are converted to '_' and a ending '.txt' is added
+     */
+    private String getFilenameReadableString(@NonNull String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            Log.e(TAG, "the file name is empty so i can not get a  readablefile name");
+            return "";
+        }
+        String tempFilename = fileName.replaceAll("_", " ");
+        return tempFilename.replace(".txt", "");
+
     }
 
     public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted, @NonNull boolean contentIsPrivate) {
@@ -121,7 +136,6 @@ public class InternalStorageUtils {
         return listInternalFiles(filePath.getAbsolutePath());
     }
 
-    // todo return an ArrayList with a file model
     // datafields: fileName, fileSize, contentHeaderType (PRIVATE OR PUBLIC),
     // contentType (ENCRYPTED or UNENCRYPTED), timestamp (long), date (Date), url
     public ArrayList<FileModel> listPastesInternalModel(@NonNull boolean contentIsEncrypted) {
@@ -247,19 +261,34 @@ public class InternalStorageUtils {
 
     /**
      * This method lists all filenames and returns a ArrayList of files of FileModel class
+     * for this it needs to read all entries
      * @param path is the folder that is listed
      * @return
      */
     private ArrayList<FileModel> listInternalFilesModel(@NonNull String path) {
         ArrayList<FileModel> tempList = new ArrayList<>();
-        //ArrayList<String> tempList = new ArrayList<>();
         File internalStorageDir = new File(mContext.getFilesDir(), path);
         File[] files = internalStorageDir.listFiles();
         ArrayList<String> fileNames = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
-                fileNames.add(files[i].getName());
-                // todo generate a FileModel and return
+                String fileName = getFilenameReadableString(files[i].getName());
+                long fileSize = files[i].length();
+                String contentHeaderType = "PUBLIC";
+                String contentType = "UNENCRYPTED";
+                long timestamp = 1672507703895L;
+                Date date = new Date(timestamp);
+                String url = ""; // "" = unsyncronized
+                FileModel fileModel = new FileModel(
+                        fileName,
+                        fileSize,
+                        contentHeaderType,
+                        contentType,
+                        timestamp,
+                        date,
+                        url
+                );
+                tempList.add(fileModel);
             }
         }
         return tempList;
