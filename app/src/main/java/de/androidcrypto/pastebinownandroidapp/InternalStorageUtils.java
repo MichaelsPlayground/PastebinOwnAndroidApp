@@ -29,6 +29,7 @@ public class InternalStorageUtils {
     public static final String CONTENT_TYPE_PUBLIC = "PUBLIC";
     public static final String CONTENT_TYPE_PRIVATE = "PRIVATE";
     public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:"; // DO NOT CHANGE
+    public static final String URL_HEADER = "URL";
     private final String BASE_FOLDER = "pastes";
     private final String UNENCRYPTED_FOLDER = "unencrypted";
     private final String ENCRYPTED_FOLDER = "encrypted";
@@ -67,7 +68,7 @@ public class InternalStorageUtils {
 
     }
 
-    public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted, @NonNull boolean contentIsPrivate) {
+    public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted, @NonNull boolean contentIsPrivate, @NonNull String url) {
         if (TextUtils.isEmpty(filename)) {
             Log.e(TAG, "storage aborted, filename is empty");
             return false;
@@ -86,6 +87,7 @@ public class InternalStorageUtils {
         File filePath;
         String contentHeader;
         String contentHeaderType;
+        String contentHeaderUrl = ":" + URL_HEADER + ":" + url;
         if (contentIsPrivate) {
             contentHeaderType = CONTENT_TYPE_PRIVATE;
         } else {
@@ -93,10 +95,10 @@ public class InternalStorageUtils {
         }
         if (contentIsEncrypted) {
             filePath = new File(basePath, ENCRYPTED_FOLDER);
-            contentHeader = ENCRYPTED_CONTENT + contentHeaderType + "\n";
+            contentHeader = ENCRYPTED_CONTENT + contentHeaderType + contentHeaderUrl + "\n";
         } else {
             filePath = new File(basePath, UNENCRYPTED_FOLDER);
-            contentHeader = UNENCRYPTED_CONTENT + contentHeaderType + "\n";
+            contentHeader = UNENCRYPTED_CONTENT + contentHeaderType + contentHeaderUrl + "\n";
         }
         String timestampString = TIMESTAMP_CONTENT + timestamp + "\n";
         return writeToInternalStorage(
@@ -253,7 +255,7 @@ public class InternalStorageUtils {
         ArrayList<String> fileNames = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
-                fileNames.add(files[i].getName());
+                fileNames.add(getFilenameReadableString(files[i].getName()));
             }
         }
         return fileNames;
@@ -274,6 +276,9 @@ public class InternalStorageUtils {
             if (files[i].isFile()) {
                 String fileName = getFilenameReadableString(files[i].getName());
                 long fileSize = files[i].length();
+
+                // todo read each entry and get the following data
+
                 String contentHeaderType = "PUBLIC";
                 String contentType = "UNENCRYPTED";
                 long timestamp = 1672507703895L;

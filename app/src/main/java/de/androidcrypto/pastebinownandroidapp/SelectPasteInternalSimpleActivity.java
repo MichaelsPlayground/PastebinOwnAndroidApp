@@ -3,6 +3,7 @@ package de.androidcrypto.pastebinownandroidapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.CompoundButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,6 +56,14 @@ public class SelectPasteInternalSimpleActivity extends AppCompatActivity {
         // setting adapter to our recycler view.
         recyclerView.setAdapter(pastesInternalSimpleAdapter);
         getInternalPastes(this, listEncrypted);
+
+        pasteEncrypted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                listEncrypted = pasteEncrypted.isChecked();
+                getInternalPastes(getApplicationContext(), listEncrypted);
+            }
+        });
     }
 
     private void getInternalPastes(Context context, boolean listEncryptedFiles) {

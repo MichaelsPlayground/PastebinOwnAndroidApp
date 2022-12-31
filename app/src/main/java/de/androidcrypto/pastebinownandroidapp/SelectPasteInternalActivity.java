@@ -37,7 +37,7 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
     //private ArrayList<PasteModel> pasteArrayList;
 
     private boolean listEncrypted = false; // default
-    private ArrayList<String> pastesArrayList = new ArrayList<>();
+    private ArrayList<FileModel> pastesArrayList = new ArrayList<>();
 
 
     @Override
@@ -81,7 +81,7 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
         Log.i(TAG, "getInternalPastes");
         pastesArrayList = new ArrayList<>();
         InternalStorageUtils internalStorageUtils = new InternalStorageUtils(context);
-        pastesArrayList = internalStorageUtils.listPastesInternal(listEncryptedFiles);
+        pastesArrayList = internalStorageUtils.listPastesInternalModel(listEncryptedFiles);
         Log.i(TAG, "pastesArrayList contains entries: " + pastesArrayList.size());
         System.out.println("getInternalPastes, filenames");
         for (int i = 0; i < pastesArrayList.size(); i++) {

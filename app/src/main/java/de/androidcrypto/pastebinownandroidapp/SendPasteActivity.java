@@ -158,6 +158,7 @@ public class SendPasteActivity extends AppCompatActivity {
                     snackbar.setBackgroundTint(ContextCompat.getColor(SendPasteActivity.this, R.color.green));
                     snackbar.show();
 
+                    // todo get url from pastebin.com
                     // now save the paste in internal storage
                     InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
                     // write an unencrypted string
@@ -166,7 +167,8 @@ public class SendPasteActivity extends AppCompatActivity {
                             pasteTextString,
                             String.valueOf(timestamp),
                             false,
-                            pastePrivate.isChecked());
+                            pastePrivate.isChecked(),
+                            "https://pastebin.com/xxx");
                     Log.i(TAG, "unencrypted writeSuccess: " + writeSuccess);
 
                     // clean data
@@ -250,12 +252,16 @@ public class SendPasteActivity extends AppCompatActivity {
                     boolean pasteIsPrivate = false;
                     if (visibility == PastebinPaste.VISIBILITY_PRIVATE) pasteIsPrivate = true;
                     // write an unencrypted string
+
+                    // todo get pastebin.com url
+
                     boolean writeSuccess = internalStorageUtils.writePasteInternal(
                             pasteTitleString,
                             pasteTextString,
                             timestampString,
                             true,
-                            pasteIsPrivate);
+                            pasteIsPrivate,
+                            "https://pastebin.com/xxx");
                     Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
 
                     // clean data

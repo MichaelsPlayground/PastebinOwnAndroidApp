@@ -61,7 +61,8 @@ public class InternalStorageActivity extends AppCompatActivity {
                         sampleUnencryptedString,
                         String.valueOf(timestamp),
                         false,
-                        false);
+                        false,
+                        "https://pastebin.com/xxx");
                 Log.i(TAG, "unencrypted writeSuccess: " + writeSuccess);
                 // write an encrypted string
                 writeSuccess = internalStorageUtils.writePasteInternal(
@@ -69,7 +70,8 @@ public class InternalStorageActivity extends AppCompatActivity {
                         sampleCiphertextString,
                         String.valueOf(timestamp),
                         true,
-                        false);
+                        false,
+                        "https://pastebin.com/xxx");
                 Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
 
             }

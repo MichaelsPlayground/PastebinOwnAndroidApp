@@ -20,12 +20,12 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
 
     private static final String TAG = "PastesInternalAdapter";
 
-    private ArrayList<String> mPasteList;
+    private ArrayList<FileModel> mPasteList;
     private Context mContext;
     private boolean mEncryptedPastes;
 
     //public PastesAdapter(String data) {
-    public PastesInternalAdapter(ArrayList<String> pasteList, Context context, boolean pasteIsEncrypted) {
+    public PastesInternalAdapter(ArrayList<FileModel> pasteList, Context context, boolean pasteIsEncrypted) {
         //super();
 
         System.out.println("### PastesInternalAdapter INIT ###");
@@ -56,9 +56,11 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         //PasteModel pasteModel = mPasteList.get(position);
-        String filename = mPasteList.get(position);
+        FileModel fileModel = mPasteList.get(position);
+        String filename = fileModel.getFileName();
         System.out.println("** onBindViewHolder pos " + position + " fn " + filename);
         holder.paste_title.setText(filename);
+        holder.paste_date.setText(fileModel.getDate().toString());
         //holder.paste_hits.setText(String.valueOf(pasteModel.getPasteHits()));
         //holder.paste_hits.setText("17");
         holder.paste_expire.setText("exp");
@@ -78,19 +80,20 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
         }
 
          */
-        /*
-        if (pasteModel.getPastePrivate() == 0) {
+
+        if (fileModel.getContentHeaderType().equals(InternalStorageUtils.CONTENT_TYPE_PUBLIC)) {
             // public
             holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_open_24));
+        /*
         } else if (pasteModel.getPastePrivate() == 1) {
             // unlisted
-            holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_playlist_remove_24));
+            holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_playlist_remove_24));*/
         } else {
             // private
             holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_24));
         }
 
-         */
+
         //Timestamp stamp = new Timestamp(Integer.parseInt(pasteModel.));
         //Date date = new Date(pasteModel.getPasteDate());
 
