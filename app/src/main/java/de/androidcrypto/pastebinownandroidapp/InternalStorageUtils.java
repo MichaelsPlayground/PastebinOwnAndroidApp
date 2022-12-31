@@ -107,6 +107,7 @@ public class InternalStorageUtils {
         return readFromInternalStorage(filePath.getAbsolutePath(), getFilenameString(filename));
     }
 
+    // returns the filenames
     public ArrayList<String> listPastesInternal(@NonNull boolean contentIsEncrypted) {
         File basePath = new File(BASE_FOLDER);
         // create the directory
@@ -119,6 +120,10 @@ public class InternalStorageUtils {
         }
         return listInternalFiles(filePath.getAbsolutePath());
     }
+
+    // todo return an ArrayList with a file model
+    // datafields: fileName, fileSize, contentHeaderType (PRIVATE OR PUBLIC),
+    // contentType (ENCRYPTED or UNENCRYPTED), timestamp (long), date (Date)
 
     private boolean writeToInternalStorage(@NonNull File basePath, @NonNull String filename, @NonNull String content) {
         if (TextUtils.isEmpty(basePath.getAbsolutePath())) {
