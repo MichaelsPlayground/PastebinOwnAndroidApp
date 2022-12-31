@@ -60,6 +60,7 @@ public class InternalStorageActivity extends AppCompatActivity {
                         filename,
                         sampleUnencryptedString,
                         String.valueOf(timestamp),
+                        false,
                         false);
                 Log.i(TAG, "unencrypted writeSuccess: " + writeSuccess);
                 // write an encrypted string
@@ -67,7 +68,8 @@ public class InternalStorageActivity extends AppCompatActivity {
                         filename,
                         sampleCiphertextString,
                         String.valueOf(timestamp),
-                        true);
+                        true,
+                        false);
                 Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
 
             }

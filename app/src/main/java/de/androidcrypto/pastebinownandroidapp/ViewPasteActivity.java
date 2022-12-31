@@ -85,28 +85,28 @@ public class ViewPasteActivity extends AppCompatActivity {
 
         alertDialog.setTitle(titleString);
         alertDialog.setMessage(messageString);
-        final EditText oldPassphrase = new EditText(ViewPasteActivity.this);
-        oldPassphrase.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.round_rect_shape, null));
-        oldPassphrase.setHint(hintString);
-        oldPassphrase.setPadding(50, 20, 50, 20);
+        final EditText passphrase = new EditText(ViewPasteActivity.this);
+        passphrase.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.round_rect_shape, null));
+        passphrase.setHint(hintString);
+        passphrase.setPadding(50, 20, 50, 20);
         LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lp1.setMargins(36, 36, 36, 36);
-        oldPassphrase.setLayoutParams(lp1);
+        passphrase.setLayoutParams(lp1);
         RelativeLayout container = new RelativeLayout(ViewPasteActivity.this);
         RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         container.setLayoutParams(rlParams);
-        container.addView(oldPassphrase);
+        container.addView(passphrase);
         alertDialog.setView(container);
         alertDialog.setPositiveButton("OPEN DOCUMENT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int oldPassphraseLength = oldPassphrase.length();
-                char[] oldPassword = new char[oldPassphraseLength];
-                oldPassphrase.getText().getChars(0, oldPassphraseLength, oldPassword, 0);
+                int passphraseLength = passphrase.length();
+                char[] password = new char[passphraseLength];
+                passphrase.getText().getChars(0, passphraseLength, password, 0);
                 // test on password length
-                if (oldPassphraseLength < MINIMAL_PASSPHRASE_LENGTH) {
+                if (passphraseLength < MINIMAL_PASSPHRASE_LENGTH) {
                     Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "The passphrase is too short", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(ViewPasteActivity.this, R.color.red));
                     snackbar.show();
@@ -117,7 +117,7 @@ public class ViewPasteActivity extends AppCompatActivity {
 
                 // todo see InternalStorageActivity - loadEncryptedPaste
 
-                String decryptedString = encryptionUtils.doDecryptionAesGcmPbkdf2(oldPassword, ciphertext);
+                String decryptedString = encryptionUtils.doDecryptionAesGcmPbkdf2(password, ciphertext);
                 if (TextUtils.isEmpty(decryptedString)) {
                     Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not decrypt (wrong passphrase ?)", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(ViewPasteActivity.this, R.color.red));

@@ -82,11 +82,19 @@ public class SendPasteActivity extends AppCompatActivity {
                     Log.i(TAG, "save a public paste");
                 }
                 String contentHeader = "";
+                String contentHeaderType = "";
+                if (pastePrivate.isChecked()) {
+                    contentHeaderType = InternalStorageUtils.CONTENT_TYPE_PRIVATE;
+                    Log.i(TAG, "the paste is private");
+                } else {
+                    contentHeaderType = InternalStorageUtils.CONTENT_TYPE_PUBLIC;
+                    Log.i(TAG, "the paste is public");
+                }
                 if (pasteEncrypted.isChecked()) {
-                    contentHeader = InternalStorageUtils.ENCRYPTED_CONTENT + "\n";
+                    contentHeader = InternalStorageUtils.ENCRYPTED_CONTENT + contentHeaderType + "\n";
                     Log.i(TAG, "the paste is encrypted");
                 } else {
-                    contentHeader = InternalStorageUtils.UNENCRYPTED_CONTENT + "\n";
+                    contentHeader = InternalStorageUtils.UNENCRYPTED_CONTENT + contentHeaderType + "\n";
                     Log.i(TAG, "the paste is unencrypted");
                 }
                 // create paste, for this we need to login and get an account
@@ -157,7 +165,8 @@ public class SendPasteActivity extends AppCompatActivity {
                             pasteTitleString,
                             pasteTextString,
                             String.valueOf(timestamp),
-                            false);
+                            false,
+                            pastePrivate.isChecked());
                     Log.i(TAG, "writeSuccess: " + writeSuccess);
 
                     // clean data
@@ -178,35 +187,35 @@ public class SendPasteActivity extends AppCompatActivity {
 
         alertDialog.setTitle(titleString);
         alertDialog.setMessage(messageString);
-        final EditText oldPassphrase = new EditText(SendPasteActivity.this);
-        oldPassphrase.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.round_rect_shape, null));
-        oldPassphrase.setHint(hintString);
-        oldPassphrase.setPadding(50, 20, 50, 20);
+        final EditText passphrase = new EditText(SendPasteActivity.this);
+        passphrase.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.round_rect_shape, null));
+        passphrase.setHint(hintString);
+        passphrase.setPadding(50, 20, 50, 20);
         LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         lp1.setMargins(36, 36, 36, 36);
-        oldPassphrase.setLayoutParams(lp1);
+        passphrase.setLayoutParams(lp1);
         RelativeLayout container = new RelativeLayout(SendPasteActivity.this);
         RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         container.setLayoutParams(rlParams);
-        container.addView(oldPassphrase);
+        container.addView(passphrase);
         alertDialog.setView(container);
         alertDialog.setPositiveButton("SAVE DOCUMENT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int oldPassphraseLength = oldPassphrase.length();
-                char[] oldPassword = new char[oldPassphraseLength];
-                oldPassphrase.getText().getChars(0, oldPassphraseLength, oldPassword, 0);
+                int passphraseLength = passphrase.length();
+                char[] password = new char[passphraseLength];
+                passphrase.getText().getChars(0, passphraseLength, password, 0);
                 // test on password length
-                if (oldPassphraseLength < MINIMAL_PASSPHRASE_LENGTH) {
+                if (passphraseLength < MINIMAL_PASSPHRASE_LENGTH) {
                     Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "The passphrase is too short", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(SendPasteActivity.this, R.color.red));
                     snackbar.show();
                     return;
                 }
                 EncryptionUtils encryptionUtils = new EncryptionUtils();
-                String ciphertext = encryptionUtils.doEncryptionAesGcmPbkdf2(oldPassword, pasteTextString.getBytes(StandardCharsets.UTF_8));
+                String ciphertext = encryptionUtils.doEncryptionAesGcmPbkdf2(password, pasteTextString.getBytes(StandardCharsets.UTF_8));
                 if (TextUtils.isEmpty(ciphertext)) {
                     Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not encrypt the paste", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(SendPasteActivity.this, R.color.red));
@@ -237,12 +246,16 @@ public class SendPasteActivity extends AppCompatActivity {
                     snackbar.show();
                     // now save the paste in internal storage
                     InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
+                    // check if paste is private
+                    boolean pasteIsPrivate = false;
+                    if (visibility == PastebinPaste.VISIBILITY_PRIVATE) pasteIsPrivate = true;
                     // write an unencrypted string
                     boolean writeSuccess = internalStorageUtils.writePasteInternal(
                             pasteTitleString,
                             pasteTextString,
                             timestampString,
-                            false);
+                            false,
+                            pasteIsPrivate);
                     Log.i(TAG, "writeSuccess: " + writeSuccess);
 
                     // clean data

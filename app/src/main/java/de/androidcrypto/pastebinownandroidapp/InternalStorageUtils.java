@@ -23,8 +23,10 @@ public class InternalStorageUtils {
      */
 
     private static final String TAG = "InternalStorageUtils";
-    public static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT";
-    public static final String UNENCRYPTED_CONTENT = "UNENCRYPTED CONTENT";
+    public static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT:";
+    public static final String UNENCRYPTED_CONTENT = "UNENCRYPTED CONTENT:";
+    public static final String CONTENT_TYPE_PUBLIC = "PUBLIC";
+    public static final String CONTENT_TYPE_PRIVATE = "PRIVATE";
     public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:"; // DO NOT CHANGE
     private final String BASE_FOLDER = "pastes";
     private final String UNENCRYPTED_FOLDER = "unencrypted";
@@ -50,7 +52,7 @@ public class InternalStorageUtils {
         return tempFilename + ".txt";
     }
 
-    public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted) {
+    public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted, @NonNull boolean contentIsPrivate) {
         if (TextUtils.isEmpty(filename)) {
             Log.e(TAG, "storage aborted, filename is empty");
             return false;
@@ -68,12 +70,18 @@ public class InternalStorageUtils {
         boolean basePathExists = basePath.mkdirs();
         File filePath;
         String contentHeader;
+        String contentHeaderType;
+        if (contentIsPrivate) {
+            contentHeaderType = CONTENT_TYPE_PRIVATE;
+        } else {
+            contentHeaderType = CONTENT_TYPE_PUBLIC;
+        }
         if (contentIsEncrypted) {
             filePath = new File(basePath, ENCRYPTED_FOLDER);
-            contentHeader = ENCRYPTED_CONTENT + "\n";
+            contentHeader = ENCRYPTED_CONTENT + contentHeaderType + "\n";
         } else {
             filePath = new File(basePath, UNENCRYPTED_FOLDER);
-            contentHeader = UNENCRYPTED_CONTENT + "\n";
+            contentHeader = UNENCRYPTED_CONTENT + contentHeaderType + "\n";
         }
         String timestampString = TIMESTAMP_CONTENT + timestamp + "\n";
         return writeToInternalStorage(

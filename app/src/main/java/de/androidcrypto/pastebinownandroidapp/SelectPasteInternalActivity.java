@@ -60,20 +60,12 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.rvSPI);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
-        // creating our new array list
-        //pastesArrayList = new ArrayList<>();
 
         // adding our array list to our recycler view adapter class.
         pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, this, listEncrypted);
-
         // setting adapter to our recycler view.
         recyclerView.setAdapter(pastesInternalAdapter);
-
         getInternalPastes(this, listEncrypted);
-
-        //PastesAdapter pastesAdapter = new PastesAdapter(dataReturned);
-        //recyclerView.setAdapter(pastesAdapter);
-
     }
 
     private void getInternalPastes(Context context, boolean listEncryptedFiles) {
