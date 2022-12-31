@@ -123,7 +123,25 @@ public class InternalStorageUtils {
 
     // todo return an ArrayList with a file model
     // datafields: fileName, fileSize, contentHeaderType (PRIVATE OR PUBLIC),
-    // contentType (ENCRYPTED or UNENCRYPTED), timestamp (long), date (Date)
+    // contentType (ENCRYPTED or UNENCRYPTED), timestamp (long), date (Date), url
+    public ArrayList<FileModel> listPastesInternalModel(@NonNull boolean contentIsEncrypted) {
+        FileModel fileModel;
+        File basePath = new File(BASE_FOLDER);
+        // create the directory
+        //boolean basePathExists = basePath.mkdirs();
+        File filePath;
+        if (contentIsEncrypted) {
+            filePath = new File(basePath, ENCRYPTED_FOLDER);
+        } else {
+            filePath = new File(basePath, UNENCRYPTED_FOLDER);
+        }
+        return listInternalFilesModel(filePath.getAbsolutePath());
+    }
+
+
+
+    // todo add an url field for the link with Pastebin.com
+
 
     private boolean writeToInternalStorage(@NonNull File basePath, @NonNull String filename, @NonNull String content) {
         if (TextUtils.isEmpty(basePath.getAbsolutePath())) {
@@ -225,5 +243,25 @@ public class InternalStorageUtils {
             }
         }
         return fileNames;
+    }
+
+    /**
+     * This method lists all filenames and returns a ArrayList of files of FileModel class
+     * @param path is the folder that is listed
+     * @return
+     */
+    private ArrayList<FileModel> listInternalFilesModel(@NonNull String path) {
+        ArrayList<FileModel> tempList = new ArrayList<>();
+        //ArrayList<String> tempList = new ArrayList<>();
+        File internalStorageDir = new File(mContext.getFilesDir(), path);
+        File[] files = internalStorageDir.listFiles();
+        ArrayList<String> fileNames = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                fileNames.add(files[i].getName());
+                // todo generate a FileModel and return
+            }
+        }
+        return tempList;
     }
 }
