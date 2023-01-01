@@ -38,12 +38,7 @@ public class StorageUtils {
     private final String DEVELOPER_KEY_NAME = "developer_key";
     private final String USER_NAME = "user_name";
     private final String PASSWORD_NAME = "user_password";
-    private final String USER_ACCOUNT = "user_account";
-
-
-
-
-
+    private final String USER_KEY = "user_key";
 
     public StorageUtils(Context context) {
         Log.d(TAG, "StorageUtils construction");
@@ -194,36 +189,36 @@ public class StorageUtils {
     }
 
     /**
-     * user account utils
+     * user key utils
      */
 
-    public boolean isUserAccountAvailable() {
-        if (TextUtils.isEmpty(getUserAccount())) {
-            Log.d(TAG, "user account is not available");
+    public boolean isUserKeyAvailable() {
+        if (TextUtils.isEmpty(getUserKey())) {
+            Log.d(TAG, "user key is not available");
             return false;
         } else {
-            Log.d(TAG, "user account is available");
+            Log.d(TAG, "user key is available");
             return true;
         }
     }
 
-    public boolean setUserAccount(String userAccount) {
-        if (TextUtils.isEmpty(userAccount)) {
-            Log.e(TAG, "user account is empty, storage aborted");
+    public boolean setUserKey(String userKey) {
+        if (TextUtils.isEmpty(userKey)) {
+            Log.e(TAG, "user key is empty, storage aborted");
             return false;
         }
         try {
-            sharedPreferences.edit().putString(USER_ACCOUNT, userAccount).apply();
+            sharedPreferences.edit().putString(USER_KEY, userKey).apply();
         } catch (Exception e) {
-            Log.e(TAG, "Error on user account storage: " + e.getMessage());
+            Log.e(TAG, "Error on user key storage: " + e.getMessage());
             return false;
         }
-        Log.d(TAG, "user account sucessful stored");
+        Log.d(TAG, "user key sucessful stored");
         return true;
     }
 
-    public String getUserAccount() {
-        return sharedPreferences.getString(USER_ACCOUNT, "");
+    public String getUserKey() {
+        return sharedPreferences.getString(USER_KEY, "");
     }
 
     /**
