@@ -347,6 +347,9 @@ public class InternalStorageUtils {
                 // parts[0] UNENCRYPTED CONTENT:PUBLIC:URL:https://pastebin.com/xxx
                 // parts[1] TIMESTAMP CONTENT:1672589504195
                 // parts[2] ... content ...
+
+                // todo This does not work, it does not list any file !
+
                 if (parts.length > 0) {
                     String[] partsLine0 = parts[0].split(":");
                     if (partsLine0.length != 4) {
