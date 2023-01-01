@@ -117,6 +117,11 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        // init PastebinLoginUtils - delete userKey
+        StorageUtils storageUtils = new StorageUtils(this);
+        storageUtils.deleteUserKey();
+
+
         enterDeveloperKey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +144,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "login to Pastebin");
+
+                int loginStatus = PastebinLoginUtils.loginToPastebin(view.getContext());
+                if (loginStatus == 1) {
+                    // no credentials stored
+                    Log.d(TAG, "cannot login as not all credentials are set");
+                    Snackbar snackbar = Snackbar.make(view, "Did you set the developer key, user name and password ? aborted", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
+                    snackbar.show();
+                    return;
+                };
+                if (loginStatus == 2) {
+                    Log.d(TAG, "login failed (wrong DeveloperKey, UserName and/or password ?)");
+                    Snackbar snackbar = Snackbar.make(view, "Login failed (wrong developer key, user name and password ?) aborted", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
+                    snackbar.show();
+                }
+                getUrlData.setText("userKey: " + PastebinLoginUtils.pastebinUserKey);
+                Log.d(TAG, "successfully loged in to Pastebin, userKey: " + PastebinLoginUtils.pastebinUserKey);
+                /*
                 // check for stored credentials (developer key, user name and password)
                 boolean credentialsAreSet = checkForCredentials();
                 if (!credentialsAreSet) {
@@ -161,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                 userKey = account.getUserSessionId();
                 Log.i(TAG, "userKey: " + userKey);
                 getUrlData.setText("userKey : " + userKey);
+                */
             }
         });
 
@@ -168,7 +193,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "select a paste");
-                if (TextUtils.isEmpty(userKey)) {
+                //if (PastebinLoginUtils.loginToPastebinUserKey(getApplicationContext()) !=0) {
+                    if (PastebinLoginUtils.loginToPastebin(getApplicationContext()) !=0) {
                     Snackbar snackbar = Snackbar.make(view, "Please login to proceed, aborted", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
                     snackbar.show();
@@ -325,8 +351,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
 
         checkInternetConnection.setOnClickListener(new View.OnClickListener() {
             @Override

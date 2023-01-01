@@ -6,8 +6,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jpaste.pastebin.PasteExpireDate;
 import org.jpaste.pastebin.PastebinLink;
@@ -61,7 +64,7 @@ public class SelectPasteActivity extends AppCompatActivity {
         //PastesAdapter pastesAdapter = new PastesAdapter(dataReturned);
         //recyclerView.setAdapter(pastesAdapter);
 
-
+/*
         StorageUtils su = new StorageUtils(this);
         account = new PastebinAccount(su.getDeveloperKey(), su.getUserName(), su.getUserPassword());
         // fetches an user session id
@@ -73,6 +76,33 @@ public class SelectPasteActivity extends AppCompatActivity {
             return;
         }
         userKey = account.getUserSessionId();
+
+ */
+        if (PastebinLoginUtils.account == null) {
+            Log.e(TAG, "select paste failed, missing login, try to login using userKey");
+            //int loginStatus = PastebinLoginUtils.loginToPastebinUserKey(this);
+            int loginStatus = PastebinLoginUtils.loginToPastebin(this);
+
+
+            if (loginStatus == 1) {
+                // no credentials stored
+                Log.d(TAG, "cannot login as no userKey was stored");
+                Snackbar snackbar = Snackbar.make(recyclerView, "Did you set the developer key, user name and password ? aborted", Snackbar.LENGTH_LONG);
+                snackbar.setBackgroundTint(ContextCompat.getColor(SelectPasteActivity.this, R.color.red));
+                snackbar.show();
+                return;
+            };
+            if (loginStatus == 2) {
+                Log.d(TAG, "login failed (wrong DeveloperKey, UserName and/or password ?)");
+                Snackbar snackbar = Snackbar.make(recyclerView, "Login failed (wrong developer key, user name and password ?) aborted", Snackbar.LENGTH_LONG);
+                snackbar.setBackgroundTint(ContextCompat.getColor(SelectPasteActivity.this, R.color.red));
+                snackbar.show();
+            }
+            Log.d(TAG, "loged in using userKey");
+            account = PastebinLoginUtils.account;
+        }
+
+
         getPastes();
         System.out.println("*** getPastes size: " + pasteArrayList.size());
         //pastesAdapter.notifyDataSetChanged();

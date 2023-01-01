@@ -16,7 +16,7 @@ public class PastebinLoginUtils {
     private static final String TAG = "PastebinLoginUtils";
 
     private static Context mContext;
-    public static PastebinAccount account;
+    public static PastebinAccount account = null;
     public static String pastebinUserKey = "";
 
     /**
@@ -90,27 +90,10 @@ public class PastebinLoginUtils {
         }
         pastebinUserKey = storageUtils.getUserKey();
         account = new PastebinAccount(pastebinUserKey);
-        // fetches an user session id
-        try {
-            account.login();
-        } catch (LoginException e) {
-            e.printStackTrace();
-            Log.e(TAG, e.getMessage());
+        if (TextUtils.isEmpty(account.getUserSessionId())) {
+            Log.e(TAG, "loginToPastebin failed (wrong UserKey ?)");
             return 2;
         }
-        return account.getUserSessionId();
-
-        pastebinUserKey = loginToPastebinInternal(
-                storageUtils.getDeveloperKey(),
-                storageUtils.getUserName(),
-                storageUtils.getUserPassword()
-        );
-        if (TextUtils.isEmpty(pastebinUserKey)) {
-            Log.e(TAG, "loginToPastebin failed (wrong DeveloperKey, UserName and/or UserPassword ?)");
-            return 2;
-        }
-        // store the userKey
-        storageUtils.setUserKey(pastebinUserKey);
         return 0;
     }
 

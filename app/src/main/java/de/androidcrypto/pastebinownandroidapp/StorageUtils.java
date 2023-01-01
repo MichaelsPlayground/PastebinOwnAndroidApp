@@ -202,6 +202,17 @@ public class StorageUtils {
         }
     }
 
+    public boolean deleteUserKey() {
+        try {
+            sharedPreferences.edit().putString(USER_KEY, "").apply();
+        } catch (Exception e) {
+            Log.e(TAG, "Error on user key deletion: " + e.getMessage());
+            return false;
+        }
+        Log.d(TAG, "user key sucessful deleted");
+        return true;
+    }
+
     public boolean setUserKey(String userKey) {
         if (TextUtils.isEmpty(userKey)) {
             Log.e(TAG, "user key is empty, storage aborted");
