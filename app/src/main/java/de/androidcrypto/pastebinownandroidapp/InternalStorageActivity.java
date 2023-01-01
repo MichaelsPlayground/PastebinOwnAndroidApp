@@ -53,7 +53,9 @@ public class InternalStorageActivity extends AppCompatActivity {
                 System.out.println("sampleCiphertextString:\n" + sampleCiphertextString);
 
                 // get the actual timestamp
-                long timestamp = new Date().getTime();
+                //long timestamp = new Date().getTime();
+                // use a dummy timestamp
+                long timestamp = Long.parseLong("1672577506489");
                 InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
                 // write an unencrypted string
                 boolean writeSuccess = internalStorageUtils.writePasteInternal(
@@ -83,10 +85,10 @@ public class InternalStorageActivity extends AppCompatActivity {
                 Log.i(TAG, "load unencrypted");
                 String filename = "test";
                 InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
-                String contentFullString =internalStorageUtils.loadPasteInternal(filename, false);
+                String contentFullString = internalStorageUtils.loadPasteInternal(filename, false, "1672577506489");
                 content.setText(getRawContent2Lines(contentFullString));
                 // get the actual timestamp
-                long timestamp = new Date().getTime();
+                //long timestamp = new Date().getTime();
                 //String timestampPaste = "1672403428006";
                 //String timestampPaste = "1772403428006";
                 // the method to retrieve the timestamp from a stored paste is in InternalStorageUtils
@@ -112,7 +114,7 @@ public class InternalStorageActivity extends AppCompatActivity {
                 Log.i(TAG, "load encrypted");
                 String filename = "test";
                 InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
-                String encryptedContent = internalStorageUtils.loadPasteInternal(filename, true);
+                String encryptedContent = internalStorageUtils.loadPasteInternal(filename, true, "1672577506489");
                 EncryptionUtils encryptionUtils = new EncryptionUtils();
                 if (!TextUtils.isEmpty(encryptedContent)) {
                     // strip off the first two lines

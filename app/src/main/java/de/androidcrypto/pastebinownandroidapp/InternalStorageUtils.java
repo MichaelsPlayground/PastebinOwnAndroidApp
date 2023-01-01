@@ -33,6 +33,7 @@ public class InternalStorageUtils {
     private final String BASE_FOLDER = "pastes";
     private final String UNENCRYPTED_FOLDER = "unencrypted";
     private final String ENCRYPTED_FOLDER = "encrypted";
+    private final String TIMESTAMP_SEPARATOR = "#*#"; // separates the filename from timestamp in full filename
 
     Context mContext;
 
@@ -42,33 +43,44 @@ public class InternalStorageUtils {
     }
 
     /**
-     * This method generates a readable filenameString from a fileName from internal storage
-     * All '_' are converted to ' ' and a ending '.txt' is removed
+     * This method generates a filenameString from a paste title where all blanks in the name
+     * are converted to '_'. As there are multiple pastes possible this function does add the
+     * timestamp, separated with an '#'.
+     * A file extension '.txt' is added as well
      */
-    private String getFilenameString(@NonNull String pasteTitle) {
+    private String getFilenameString(@NonNull String pasteTitle, @NonNull String timestampString) {
         if (TextUtils.isEmpty(pasteTitle)) {
             Log.e(TAG, "the paste title is empty so i can not get a file name");
             return "";
         }
+        if (TextUtils.isEmpty(timestampString)) {
+            Log.e(TAG, "the time stamp is empty so i can not get a file name");
+            return "";
+        }
         String tempFilename = pasteTitle.replaceAll(" ", "_");
-        return tempFilename + ".txt";
+        return tempFilename + TIMESTAMP_SEPARATOR + timestampString + ".txt";
     }
 
     /**
-     * This method generates a filenameString from a paste title where all blanks
-     * are converted to '_' and a ending '.txt' is added
+     * This method generates a readable filenameString from a fileName from internal storage
+     * All '_' are converted to ' ', the timestamp is removed and the extension '.txt' is removed as well
      */
     private String getFilenameReadableString(@NonNull String fileName) {
         if (TextUtils.isEmpty(fileName)) {
             Log.e(TAG, "the file name is empty so i can not get a  readablefile name");
             return "";
         }
-        String tempFilename = fileName.replaceAll("_", " ");
-        return tempFilename.replace(".txt", "");
-
+        // split the filename
+        String[] parts = fileName.split(TIMESTAMP_SEPARATOR);
+        if (parts.length != 2) {
+            Log.e(TAG, "the filename was not constructed by the app, aborted");
+            return "";
+        }
+        return parts[0].replaceAll("_", " ");
     }
 
     public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted, @NonNull boolean contentIsPrivate, @NonNull String url) {
+        Log.d(TAG, "writePasteInternal, filename " + filename);
         if (TextUtils.isEmpty(filename)) {
             Log.e(TAG, "storage aborted, filename is empty");
             return false;
@@ -103,11 +115,11 @@ public class InternalStorageUtils {
         String timestampString = TIMESTAMP_CONTENT + timestamp + "\n";
         return writeToInternalStorage(
                 filePath,
-                getFilenameString(filename),
+                getFilenameString(filename, timestamp),
                 contentHeader + timestampString + content);
     }
 
-    public String loadPasteInternal(@NonNull String filename, @NonNull boolean contentIsEncrypted) {
+    public String loadPasteInternal(@NonNull String filename, @NonNull boolean contentIsEncrypted, @NonNull String timestampString) {
         if (TextUtils.isEmpty(filename)) {
             Log.e(TAG, "load from storage aborted, filename is empty");
             return "";
@@ -121,7 +133,7 @@ public class InternalStorageUtils {
         } else {
             filePath = new File(basePath, UNENCRYPTED_FOLDER);
         }
-        return readFromInternalStorage(filePath.getAbsolutePath(), getFilenameString(filename));
+        return readFromInternalStorage(filePath.getAbsolutePath(), getFilenameString(filename, timestampString));
     }
 
     // returns the filenames
@@ -191,6 +203,7 @@ public class InternalStorageUtils {
     }
 
     private String readFromInternalStorage (@NonNull String path, @NonNull String filename) {
+        Log.d(TAG, "readFromInternalStorage, filename: " + filename);
         if (TextUtils.isEmpty(path)) {
             Log.e(TAG, "read from storage aborted, path is empty");
             return "";

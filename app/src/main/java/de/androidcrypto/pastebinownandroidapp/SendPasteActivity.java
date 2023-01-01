@@ -146,6 +146,8 @@ public class SendPasteActivity extends AppCompatActivity {
                     PastebinLink link = null;
                     try {
                         link = paste.paste();
+                        Log.i(TAG, "the paste was posted using this url: " + link.getLink());
+                        // result: https://pastebin.com/WsUGh1br
                     } catch (PasteException e) {
                         e.printStackTrace();
                         Log.e(TAG, e.getMessage());
