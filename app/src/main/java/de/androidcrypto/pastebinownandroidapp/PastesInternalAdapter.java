@@ -63,10 +63,13 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
         holder.paste_date.setText(fileModel.getDate().toString());
         //holder.paste_hits.setText(String.valueOf(pasteModel.getPasteHits()));
         //holder.paste_hits.setText("17");
-        holder.paste_expire.setText("exp");
+        holder.paste_expire.setText("");
         // no data available for this field
         //holder.paste_size.setText(String.valueOf(pasteModel.getPasteSize()));
         String expDate = "no exp";
+
+        holder.paste_link.setText(fileModel.getUrl());
+
         /*
         //PasteExpireDate ped = new PasteExpireDate(pasteModel.g);
         System.out.println("expDate: " + expDate);

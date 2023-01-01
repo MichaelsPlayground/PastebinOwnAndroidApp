@@ -240,6 +240,31 @@ public class InternalStorageUtils {
         }
     }
 
+    private String readFromInternalStorage (@NonNull File file) {
+        Log.d(TAG, "readFromInternalStorage, file: " + file.getAbsolutePath());
+        if (file == null) {
+            Log.e(TAG, "read from storage aborted, file is null");
+            return "";
+        }
+        // check that file is existing
+        if (!file.exists()) {
+            Log.e(TAG, "read from storage aborted, file is not existing");
+            return "";
+        }
+        int length = (int) file.length();
+        byte[] bytes = new byte[length];
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            in.read(bytes);
+            in.close();
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+            return "";
+        }
+    }
+
     /**
      * This method returns the timestamp from the (stripped) content
      * The full content contains a header line that needs to get stripped of before
@@ -291,47 +316,102 @@ public class InternalStorageUtils {
         ArrayList<FileModel> tempList = new ArrayList<>();
         File internalStorageDir = new File(mContext.getFilesDir(), path);
         File[] files = internalStorageDir.listFiles();
+        try {
+        if (files.length == 0) {
+            Log.d(TAG, "there are no files stored internally");
+            return new ArrayList<>();
+        } } catch (NullPointerException e) {
+            Log.d(TAG, "there are no files stored internally");
+            return new ArrayList<>();
+        }
         ArrayList<String> fileNames = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
                 String fileName = getFilenameReadableString(files[i].getName());
+                long fileSize = files[i].length();
 
                 System.out.println("* fileName org: " + files[i].getName());
                 System.out.println("* fileName kor: " + fileName);
                 System.out.println("* internalStorageDir: " + internalStorageDir.getAbsolutePath());
-                long fileSize = files[i].length();
 
+                // get the contents
                 File file = files[i];
-                //FileModel fileModel = getFileCredentials(file);
-                // todo read each entry and get the following data
-
-                String contentHeaderType = "PUBLIC";
-                String contentType = "UNENCRYPTED";
-                long timestamp = 1672507703895L;
-                Date date = new Date(timestamp);
-                String url = ""; // "" = unsyncronized
-                FileModel fileModel = new FileModel(
-                        fileName,
-                        fileSize,
-                        contentHeaderType,
-                        contentType,
-                        timestamp,
-                        date,
-                        url
-                );
-                /*
-                FileModel fileModel = new FileModel(
-                        fileName,
-                        fileSize,
-                        contentHeaderType,
-                        contentType,
-                        timestamp,
-                        date,
-                        url
-                );
-
-                 */
-                tempList.add(fileModel);
+                String fileContent = readFromInternalStorage(file);
+                if (TextUtils.isEmpty(fileContent)) {
+                    Log.e(TAG, "file is empty, reading aborted");
+                    return new ArrayList<>();
+                }
+                // split the full content into lines
+                String[] parts = fileContent.split("\n");
+                // example contents
+                // parts[0] UNENCRYPTED CONTENT:PUBLIC:URL:https://pastebin.com/xxx
+                // parts[1] TIMESTAMP CONTENT:1672589504195
+                // parts[2] ... content ...
+                if (parts.length > 0) {
+                    String[] partsLine0 = parts[0].split(":");
+                    if (partsLine0.length != 4) {
+                        Log.e(TAG, "the file is not written by the app, it cannot been analyzed");
+                        //break;
+                    } else {
+                        String contentType;
+                        if (partsLine0[0].contains(UNENCRYPTED_CONTENT)) {
+                            Log.d(TAG, "paste is UNENCRYPTED");
+                            contentType = "UNENCRYPTED";
+                        } else if (partsLine0[0].contains(ENCRYPTED_CONTENT)) {
+                            Log.d(TAG, "paste is ENCRYPTED");
+                            contentType = "ENCRYPTED";
+                        } else {
+                            Log.d(TAG, "paste is of UNDEFINED CONTENT TYPE");
+                            contentType = "UNDEFINED";
+                        }
+                        String visibilityType;
+                        if (partsLine0[1].contains(VISIBILITY_TYPE_PUBLIC)) {
+                            Log.d(TAG, "paste is PUBLIC");
+                            visibilityType = VISIBILITY_TYPE_PUBLIC;
+                        } else if (partsLine0[1].contains(VISIBILITY_TYPE_PRIVATE)) {
+                            Log.d(TAG, "paste is PRIVATE");
+                            visibilityType = VISIBILITY_TYPE_PRIVATE;
+                        } else {
+                            Log.d(TAG, "paste is PRIVATE");
+                            visibilityType = "UNDEFINED";
+                        }
+                        String url;
+                        if (partsLine0[2].contains(URL_HEADER)) {
+                            url = partsLine0[3];
+                            Log.d(TAG, "paste URL is " + url);
+                        } else {
+                            Log.e(TAG, "the file does not have an URL");
+                            url = "";
+                            //break;
+                        }
+                        // now check if there is a second line
+                        if (parts.length > 1) {
+                            String[] partsLine1 = parts[1].split(":");
+                            String timestamp;
+                            if (partsLine1[0].contains(TIMESTAMP_CONTENT)) {
+                                timestamp = partsLine1[1];
+                                Log.d(TAG, "paste timestamp is " + timestamp);
+                            } else {
+                                Log.e(TAG, "the file does not have a timestamp");
+                                timestamp = "";
+                                //break;
+                            }
+                            Date date = new Date(Long.parseLong(timestamp));
+                            FileModel fileModel = new FileModel(
+                                    fileName,
+                                    fileSize,
+                                    visibilityType,
+                                    contentType,
+                                    Long.parseLong(timestamp),
+                                    date,
+                                    url
+                            );
+                            tempList.add(fileModel);
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "the file is not written by the app, it cannot been analyzed");
+                }
             }
         }
         return tempList;
