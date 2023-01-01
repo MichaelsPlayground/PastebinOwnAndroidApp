@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
                     snackbar.show();
                 }
+                userKey = PastebinLoginUtils.pastebinUserKey;
                 getUrlData.setText("userKey: " + PastebinLoginUtils.pastebinUserKey);
                 Log.d(TAG, "successfully loged in to Pastebin, userKey: " + PastebinLoginUtils.pastebinUserKey);
                 /*
@@ -367,6 +368,19 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, InternalStorageActivity.class);
                 startActivity(intent);
                 //finish();
+            }
+        });
+
+        Button xxx = findViewById(R.id.btnMainXxx);
+        xxx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String fileName = "test#+#111#+#.txt";
+                String[] parts = fileName.split("#+#");
+                System.out.println("### fileName: " + fileName);;
+                int partsSize = parts.length;
+                System.out.println("### partsSize: " + partsSize);
+
             }
         });
 

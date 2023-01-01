@@ -47,7 +47,19 @@ public class ViewPasteActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String pasteUrl = intent.getStringExtra("PASTE_URL");
         String userKey = intent.getStringExtra("USER_KEY");
+        if (TextUtils.isEmpty(pasteUrl)) {
+            Log.e(TAG, "the calling intent does not contain a pasteUrl so the activity returns to MainActivity");
+            Intent returnIntent = new Intent(ViewPasteActivity.this, MainActivity.class);
+            startActivity(returnIntent);
+            finish();
+        } else {
+            // we received a pasteUrl, load the data
+
+        }
+
         // the activity was called directly so it will return to MainActivity
+
+        /*
 
         String sampleEncryptionString = "This is a sample encrypted paste.\n" +
                 "This is using an AES-256 encryption in GCM mode.\n" +
@@ -75,6 +87,8 @@ public class ViewPasteActivity extends AppCompatActivity {
             Log.i(TAG, "Content:\n" + content);
             viewPaste.setText(content);
         }
+
+         */
     }
 
     private void loadPasswordPressed(String encryptedContent) {

@@ -5,16 +5,16 @@ import java.util.Date;
 public class FileModel {
     private final String fileName;
     private final long fileSize;
-    private final String contentHeaderType;
-    private final String contentType;
+    private final String visibilityType; // PUBLIC, PRIVATE
+    private final String contentType; // UNENCRYPTED, ENCRYPTED
     private final long timestamp;
     private final Date date;
     private final String url;
 
-    public FileModel(String fileName, long fileSize, String contentHeaderType, String contentType, long timestamp, Date date, String url) {
+    public FileModel(String fileName, long fileSize, String visibilityType, String contentType, long timestamp, Date date, String url) {
         this.fileName = fileName;
         this.fileSize = fileSize;
-        this.contentHeaderType = contentHeaderType;
+        this.visibilityType = visibilityType;
         this.contentType = contentType;
         this.timestamp = timestamp;
         this.date = date;
@@ -29,8 +29,8 @@ public class FileModel {
         return fileSize;
     }
 
-    public String getContentHeaderType() {
-        return contentHeaderType;
+    public String getVisibilityType() {
+        return visibilityType;
     }
 
     public String getContentType() {

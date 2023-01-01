@@ -26,14 +26,14 @@ public class InternalStorageUtils {
     private static final String TAG = "InternalStorageUtils";
     public static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT:";
     public static final String UNENCRYPTED_CONTENT = "UNENCRYPTED CONTENT:";
-    public static final String CONTENT_TYPE_PUBLIC = "PUBLIC";
-    public static final String CONTENT_TYPE_PRIVATE = "PRIVATE";
+    public static final String VISIBILITY_TYPE_PUBLIC = "PUBLIC";
+    public static final String VISIBILITY_TYPE_PRIVATE = "PRIVATE";
     public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:"; // DO NOT CHANGE
     public static final String URL_HEADER = "URL";
     private final String BASE_FOLDER = "pastes";
     private final String UNENCRYPTED_FOLDER = "unencrypted";
     private final String ENCRYPTED_FOLDER = "encrypted";
-    private final String TIMESTAMP_SEPARATOR = "#*#"; // separates the filename from timestamp in full filename
+    private final String TIMESTAMP_SEPARATOR = "###"; // separates the filename from timestamp in full filename
 
     Context mContext;
 
@@ -58,7 +58,8 @@ public class InternalStorageUtils {
             return "";
         }
         String tempFilename = pasteTitle.replaceAll(" ", "_");
-        return tempFilename + TIMESTAMP_SEPARATOR + timestampString + ".txt";
+        return tempFilename + TIMESTAMP_SEPARATOR
+                + timestampString + TIMESTAMP_SEPARATOR + ".txt";
     }
 
     /**
@@ -72,11 +73,19 @@ public class InternalStorageUtils {
         }
         // split the filename
         String[] parts = fileName.split(TIMESTAMP_SEPARATOR);
-        if (parts.length != 2) {
+        Log.i(TAG, "### fileName: " + fileName);
+        Log.i(TAG, "### parts.length: " + parts.length);
+        Log.i(TAG, "### parts[0]: " + parts[0]);
+        if (parts.length > 1) {
+            Log.i(TAG, "### parts[1]: " + parts[1]);
+            Log.i(TAG, "### parts[2]: " + parts[2]);
+        }
+        //System.out.println("### parts.length: " + parts.length);
+        if (parts.length != 3) {
             Log.e(TAG, "the filename was not constructed by the app, aborted");
             return "";
         }
-        return parts[0].replaceAll("_", " ");
+        return parts[0].replaceAll("_", " ") + parts[2];
     }
 
     public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted, @NonNull boolean contentIsPrivate, @NonNull String url) {
@@ -101,9 +110,9 @@ public class InternalStorageUtils {
         String contentHeaderType;
         String contentHeaderUrl = ":" + URL_HEADER + ":" + url;
         if (contentIsPrivate) {
-            contentHeaderType = CONTENT_TYPE_PRIVATE;
+            contentHeaderType = VISIBILITY_TYPE_PRIVATE;
         } else {
-            contentHeaderType = CONTENT_TYPE_PUBLIC;
+            contentHeaderType = VISIBILITY_TYPE_PUBLIC;
         }
         if (contentIsEncrypted) {
             filePath = new File(basePath, ENCRYPTED_FOLDER);
@@ -165,8 +174,6 @@ public class InternalStorageUtils {
         }
         return listInternalFilesModel(filePath.getAbsolutePath());
     }
-
-
 
     // todo add an url field for the link with Pastebin.com
 
@@ -288,8 +295,14 @@ public class InternalStorageUtils {
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
                 String fileName = getFilenameReadableString(files[i].getName());
+
+                System.out.println("* fileName org: " + files[i].getName());
+                System.out.println("* fileName kor: " + fileName);
+                System.out.println("* internalStorageDir: " + internalStorageDir.getAbsolutePath());
                 long fileSize = files[i].length();
 
+                File file = files[i];
+                //FileModel fileModel = getFileCredentials(file);
                 // todo read each entry and get the following data
 
                 String contentHeaderType = "PUBLIC";
@@ -306,9 +319,49 @@ public class InternalStorageUtils {
                         date,
                         url
                 );
+                /*
+                FileModel fileModel = new FileModel(
+                        fileName,
+                        fileSize,
+                        contentHeaderType,
+                        contentType,
+                        timestamp,
+                        date,
+                        url
+                );
+
+                 */
                 tempList.add(fileModel);
             }
         }
         return tempList;
     }
+
+    private FileModel getFileCredentials(File file) {
+        Log.d(TAG, "getFileCredentials from file");
+        if (file == null) {
+            Log.e(TAG, "file is null, aborted");
+            return null;
+        }
+        FileModel fileModel = null;
+        String fileName = getFilenameReadableString(file.getName());
+        long fileSize = file.length();
+        // get the complete content
+        //String contentFullString = loadPasteInternal(filename, false, "1672577506489");
+
+        /*
+                fileModel = new FileModel(
+                        fileName,
+                        fileSize,
+                        visibilityType,
+                        contentType,
+                        timestamp,
+                        date,
+                        url
+                );
+
+                 */
+        return fileModel;
+    }
+
 }

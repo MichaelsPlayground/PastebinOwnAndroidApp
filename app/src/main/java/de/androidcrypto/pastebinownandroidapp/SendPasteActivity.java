@@ -84,10 +84,10 @@ public class SendPasteActivity extends AppCompatActivity {
                 String contentHeader = "";
                 String contentHeaderType = "";
                 if (pastePrivate.isChecked()) {
-                    contentHeaderType = InternalStorageUtils.CONTENT_TYPE_PRIVATE;
+                    contentHeaderType = InternalStorageUtils.VISIBILITY_TYPE_PRIVATE;
                     Log.i(TAG, "the paste is private");
                 } else {
-                    contentHeaderType = InternalStorageUtils.CONTENT_TYPE_PUBLIC;
+                    contentHeaderType = InternalStorageUtils.VISIBILITY_TYPE_PUBLIC;
                     Log.i(TAG, "the paste is public");
                 }
                 if (pasteEncrypted.isChecked()) {
@@ -121,7 +121,8 @@ public class SendPasteActivity extends AppCompatActivity {
                 }
                 // get the same timestamp for pastebin.com and internal storage
                 long timestamp = new Date().getTime();
-                String timestampString = InternalStorageUtils.TIMESTAMP_CONTENT + timestamp + "\n";
+                String timestampString = InternalStorageUtils.TIMESTAMP_CONTENT
+                        + timestamp + InternalStorageUtils.TIMESTAMP_CONTENT + "\n";
 
 
                 // todo work on encrypted pastes

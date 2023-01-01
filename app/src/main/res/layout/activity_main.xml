@@ -94,7 +94,7 @@
                 android:text="post public (10 min. expiration)" />
 
             <Button
-                android:id="@+id/btnLoginPastebin"
+                android:id="@+id/btnMainXxx"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="xxx" />

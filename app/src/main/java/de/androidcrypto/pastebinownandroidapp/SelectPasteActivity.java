@@ -78,11 +78,13 @@ public class SelectPasteActivity extends AppCompatActivity {
         userKey = account.getUserSessionId();
 
  */
+        System.out.println("*** account: " + PastebinLoginUtils.account);
+
         if (PastebinLoginUtils.account == null) {
             Log.e(TAG, "select paste failed, missing login, try to login using userKey");
             //int loginStatus = PastebinLoginUtils.loginToPastebinUserKey(this);
             int loginStatus = PastebinLoginUtils.loginToPastebin(this);
-
+            System.out.println("***login Status: " + loginStatus);
 
             if (loginStatus == 1) {
                 // no credentials stored
@@ -99,6 +101,8 @@ public class SelectPasteActivity extends AppCompatActivity {
                 snackbar.show();
             }
             Log.d(TAG, "loged in using userKey");
+            account = PastebinLoginUtils.account;
+        } else {
             account = PastebinLoginUtils.account;
         }
 

@@ -81,7 +81,7 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
 
          */
 
-        if (fileModel.getContentHeaderType().equals(InternalStorageUtils.CONTENT_TYPE_PUBLIC)) {
+        if (fileModel.getVisibilityType().equals(InternalStorageUtils.VISIBILITY_TYPE_PUBLIC)) {
             // public
             holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_open_24));
         /*
