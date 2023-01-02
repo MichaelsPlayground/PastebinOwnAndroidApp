@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     snackbar.show();
                 }
                 userKey = PastebinLoginUtils.pastebinUserKey;
+                account = PastebinLoginUtils.account;
                 getUrlData.setText("userKey: " + PastebinLoginUtils.pastebinUserKey);
                 Log.d(TAG, "successfully loged in to Pastebin, userKey: " + PastebinLoginUtils.pastebinUserKey);
                 /*
