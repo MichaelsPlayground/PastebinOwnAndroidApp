@@ -131,6 +131,8 @@ public class WritePasteActivity extends AppCompatActivity {
                         + timestamp + InternalStorageUtils.TIMESTAMP_CONTENT + "\n";
 
 
+
+/*
                 // todo work on encrypted pastes
                 if (pasteEncrypted.isChecked()) {
                     savePasswordProtectedContent(
@@ -187,13 +189,116 @@ public class WritePasteActivity extends AppCompatActivity {
                     pasteTitle.setText("");
                     pasteText.setText("");
                 }
+                */
             }
         });
 
     }
 
-
     private void savePasswordProtectedContent(View view, PastebinAccount account, int visibility, String contentHeader, String pasteTitleString, String pasteTextString, String timestampString) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(WritePasteActivity.this);
+        String titleString = "Provide the encryption passphrase";
+        String messageString = "\nPlease enter a (minimum) 4 character long passphrase and press on\nSAVE DOCUMENT.";
+        String hintString = "  passphrase";
+
+        alertDialog.setTitle(titleString);
+        alertDialog.setMessage(messageString);
+        final EditText passphrase = new EditText(WritePasteActivity.this);
+        passphrase.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.round_rect_shape, null));
+        passphrase.setHint(hintString);
+        passphrase.setPadding(50, 20, 50, 20);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp1.setMargins(36, 36, 36, 36);
+        passphrase.setLayoutParams(lp1);
+        RelativeLayout container = new RelativeLayout(WritePasteActivity.this);
+        RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        container.setLayoutParams(rlParams);
+        container.addView(passphrase);
+        alertDialog.setView(container);
+        alertDialog.setPositiveButton("SAVE DOCUMENT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int passphraseLength = passphrase.length();
+                char[] password = new char[passphraseLength];
+                passphrase.getText().getChars(0, passphraseLength, password, 0);
+                // test on password length
+                if (passphraseLength < MINIMAL_PASSPHRASE_LENGTH) {
+                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "The passphrase is too short", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                EncryptionUtils encryptionUtils = new EncryptionUtils();
+                String ciphertext = encryptionUtils.doEncryptionAesGcmPbkdf2(password, pasteTextString.getBytes(StandardCharsets.UTF_8));
+                if (TextUtils.isEmpty(ciphertext)) {
+                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not encrypt the paste", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
+                    snackbar.show();
+                    return;
+                } else {
+                    PastebinPaste paste = new PastebinPaste(account);
+                    paste.setContents(
+                            contentHeader +
+                                    timestampString +
+                                    pasteTextString);
+                    paste.setPasteTitle(pasteTitleString);
+                    paste.setVisibility(visibility);
+                    // push paste
+                    PastebinLink link = null;
+                    try {
+                        link = paste.paste();
+                    } catch (PasteException e) {
+                        e.printStackTrace();
+                        Log.e(TAG, e.getMessage());
+                        Snackbar snackbar = Snackbar.make(view, "Error during send a paste to Pastebin.com, aborted", Snackbar.LENGTH_LONG);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
+                        snackbar.show();
+                        return;
+                    }
+                    Snackbar snackbar = Snackbar.make(view, "The paste was sent successfully to Pastebin.com", Snackbar.LENGTH_SHORT);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.green));
+                    snackbar.show();
+                    // now save the paste in internal storage
+                    InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
+                    // check if paste is private
+                    boolean pasteIsPrivate = false;
+                    if (visibility == PastebinPaste.VISIBILITY_PRIVATE) pasteIsPrivate = true;
+                    // write an unencrypted string
+
+                    // todo get pastebin.com url
+
+                    boolean writeSuccess = internalStorageUtils.writePasteInternal(
+                            pasteTitleString,
+                            pasteTextString,
+                            timestampString,
+                            true,
+                            pasteIsPrivate,
+                            "https://pastebin.com/xxx");
+                    Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
+
+                    // clean data
+                    pasteTitle.setText("");
+                    pasteText.setText("");
+
+                    return;
+                }
+            }
+        });
+        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Save an encrypted paste was cancelled", Snackbar.LENGTH_LONG);
+                snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
+                snackbar.show();
+                return;
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void savePasswordProtectedContentOld(View view, PastebinAccount account, int visibility, String contentHeader, String pasteTitleString, String pasteTextString, String timestampString) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(WritePasteActivity.this);
         String titleString = "Provide the encryption passphrase";
         String messageString = "\nPlease enter a (minimum) 4 character long passphrase and press on\nSAVE DOCUMENT.";
