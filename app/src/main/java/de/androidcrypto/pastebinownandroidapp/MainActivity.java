@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "select a paste (simple internal)");
+                /*
                 if (TextUtils.isEmpty(userKey)) {
                     Snackbar snackbar = Snackbar.make(view, "Please login to proceed, aborted", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
@@ -223,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
                     //Toast.makeText(MainActivity.this, "Please login to proceed", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                 */
                 Intent intent = new Intent(MainActivity.this, SelectPasteInternalSimpleActivity.class);
                 //intent.putExtra("USER_KEY", userKey);
                 startActivity(intent);
@@ -234,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "select a paste (internal)");
+                /*
                 if (TextUtils.isEmpty(userKey)) {
                     Snackbar snackbar = Snackbar.make(view, "Please login to proceed, aborted", Snackbar.LENGTH_LONG);
                     snackbar.setBackgroundTint(ContextCompat.getColor(MainActivity.this, R.color.red));
@@ -241,6 +245,8 @@ public class MainActivity extends AppCompatActivity {
                     //Toast.makeText(MainActivity.this, "Please login to proceed", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                 */
                 Intent intent = new Intent(MainActivity.this, SelectPasteInternalActivity.class);
                 //intent.putExtra("USER_KEY", userKey);
                 startActivity(intent);

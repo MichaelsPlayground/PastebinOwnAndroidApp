@@ -130,7 +130,40 @@ public class WritePasteActivity extends AppCompatActivity {
                 String timestampString = InternalStorageUtils.TIMESTAMP_CONTENT
                         + timestamp + InternalStorageUtils.TIMESTAMP_CONTENT + "\n";
 
+                if (pasteEncrypted.isChecked()) {
+                    savePasswordProtectedContent(
+                            view,
+                            visibility,
+                            contentHeader,
+                            pasteTitleString,
+                            pasteTextString,
+                            timestampString);
+                } else {
 
+                    // now save the paste in internal storage
+                    InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
+                    // write an unencrypted string
+                    boolean writeSuccess = internalStorageUtils.writePasteInternal(
+                            pasteTitleString,
+                            pasteTextString,
+                            String.valueOf(timestamp),
+                            false,
+                            pastePrivate.isChecked(),
+                            "https://pastebin.com/xxx");
+                    Log.i(TAG, "unencrypted writeSuccess: " + writeSuccess);
+                    if (writeSuccess) {
+                        Snackbar snackbar = Snackbar.make(view, "The paste was written to internal storage", Snackbar.LENGTH_SHORT);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.green));
+                        snackbar.show();
+                    } else {
+                        Snackbar snackbar = Snackbar.make(view, "Error during writing the paste to internal storage", Snackbar.LENGTH_LONG);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
+                        snackbar.show();
+                    }
+                    // clean data
+                    pasteTitle.setText("");
+                    pasteText.setText("");
+                }
 
 /*
                 // todo work on encrypted pastes
@@ -195,7 +228,7 @@ public class WritePasteActivity extends AppCompatActivity {
 
     }
 
-    private void savePasswordProtectedContent(View view, PastebinAccount account, int visibility, String contentHeader, String pasteTitleString, String pasteTextString, String timestampString) {
+    private void savePasswordProtectedContent(View view, int visibility, String contentHeader, String pasteTitleString, String pasteTextString, String timestampString) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(WritePasteActivity.this);
         String titleString = "Provide the encryption passphrase";
         String messageString = "\nPlease enter a (minimum) 4 character long passphrase and press on\nSAVE DOCUMENT.";
@@ -238,6 +271,7 @@ public class WritePasteActivity extends AppCompatActivity {
                     snackbar.show();
                     return;
                 } else {
+                    /*
                     PastebinPaste paste = new PastebinPaste(account);
                     paste.setContents(
                             contentHeader +
@@ -260,6 +294,8 @@ public class WritePasteActivity extends AppCompatActivity {
                     Snackbar snackbar = Snackbar.make(view, "The paste was sent successfully to Pastebin.com", Snackbar.LENGTH_SHORT);
                     snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.green));
                     snackbar.show();
+                    */
+
                     // now save the paste in internal storage
                     InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
                     // check if paste is private
@@ -277,6 +313,15 @@ public class WritePasteActivity extends AppCompatActivity {
                             pasteIsPrivate,
                             "https://pastebin.com/xxx");
                     Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
+                    if (writeSuccess) {
+                        Snackbar snackbar = Snackbar.make(view, "The paste was written to internal storage", Snackbar.LENGTH_SHORT);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.green));
+                        snackbar.show();
+                    } else {
+                        Snackbar snackbar = Snackbar.make(view, "Error during writing the paste to internal storage", Snackbar.LENGTH_LONG);
+                        snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
+                        snackbar.show();
+                    }
 
                     // clean data
                     pasteTitle.setText("");
