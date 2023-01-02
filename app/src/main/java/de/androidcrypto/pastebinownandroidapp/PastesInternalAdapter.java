@@ -49,7 +49,8 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
     @NonNull
     @Override
     public PastesInternalAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_home_pastes, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_internal_pastes, parent, false);
+        // View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_home_pastes, parent, false);
         return new MyViewHolder(v);
     }
 
@@ -86,14 +87,19 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
 
         if (fileModel.getVisibilityType().equals(InternalStorageUtils.VISIBILITY_TYPE_PUBLIC)) {
             // public
-            holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_open_24));
+            holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_visibility_24));
         /*
         } else if (pasteModel.getPastePrivate() == 1) {
             // unlisted
             holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_playlist_remove_24));*/
         } else {
             // private
-            holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_24));
+            holder.private_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_visibility_off_24));
+        }
+        if (fileModel.getContentType().equals(InternalStorageUtils.ENCRYPTED_CONTENT)) {
+            holder.encrypt_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_24));
+        } else {
+            holder.encrypt_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_open_24));
         }
 
 
@@ -110,14 +116,18 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "recyclerView onClickListener");
-                /*
-                Log.i(TAG, "pasteUrl: " + mPasteList.get(holder.getAdapterPosition()).getPasteUrl());
-                Intent intent = new Intent(mContext, ViewPasteActivity.class);
-                intent.putExtra("PASTE_URL", mPasteList.get(holder.getAdapterPosition()).getPasteUrl());
-                intent.putExtra("USER_KEY", mUserKey);
+
+                Log.i(TAG, "pasteFilename: " + mPasteList.get(holder.getAdapterPosition()).getFileName());
+                Intent intent = new Intent(mContext, ViewInternalPasteActivity.class);
+                intent.putExtra("FILENAME", mPasteList.get(holder.getAdapterPosition()).getFileName());
+                intent.putExtra("FILENAME_STORAGE", mPasteList.get(holder.getAdapterPosition()).getFileNameStorage());
+                intent.putExtra("TIMESTAMP", String.valueOf(mPasteList.get(holder.getAdapterPosition()).getTimestamp()));
+                intent.putExtra("VISIBILITY_TYPE", mPasteList.get(holder.getAdapterPosition()).getVisibilityType());
+                intent.putExtra("CONTENT_TYPE", mPasteList.get(holder.getAdapterPosition()).getContentType());
                 mContext.startActivity(intent);
 
-                 */
+
+
             }
         });
 
@@ -162,7 +172,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
     public TextView paste_title, paste_expire;
     public TextView paste_date, paste_link;
     LinearLayout container;
-    ImageView private_ind;
+    ImageView private_ind, encrypt_ind;
 
     public MyViewHolder(View itemView) {
         super(itemView);
@@ -172,6 +182,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
         paste_link = itemView.findViewById(R.id.paste_link);
         container = (LinearLayout) itemView.findViewById(R.id.llcontainer);
         private_ind = (ImageView) itemView.findViewById(R.id.private_ind);
+        encrypt_ind = itemView.findViewById(R.id.encrypt_ind);
     }
 }
 }

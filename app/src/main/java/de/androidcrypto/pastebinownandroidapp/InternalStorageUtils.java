@@ -35,6 +35,7 @@ public class InternalStorageUtils {
     private final String UNENCRYPTED_FOLDER = "unencrypted"; // old style, only unencrypted pastes
     private final String ENCRYPTED_FOLDER = "encrypted"; // old style, only encrypted pastes
     public static final String SEPARATOR = "###"; // separates the filename from timestamp in full filename
+    private final String FILE_EXTENSION = ".txt";
 
     Context mContext;
 
@@ -177,6 +178,26 @@ public class InternalStorageUtils {
         */
         filePath = new File(basePath, GENERAL_FOLDER);
         return readFromInternalStorage(filePath.getAbsolutePath(), getFilenameString(filename, timestampString));
+    }
+
+    public String loadPasteInternal(@NonNull String filename) {
+        if (TextUtils.isEmpty(filename)) {
+            Log.e(TAG, "load from storage aborted, filename is empty");
+            return "";
+        }
+        File basePath = new File(BASE_FOLDER);
+        // create the directory
+        //boolean basePathExists = basePath.mkdirs();
+        File filePath;
+        /*
+        if (contentIsEncrypted) {
+            filePath = new File(basePath, ENCRYPTED_FOLDER);
+        } else {
+            filePath = new File(basePath, UNENCRYPTED_FOLDER);
+        }
+        */
+        filePath = new File(basePath, GENERAL_FOLDER);
+        return readFromInternalStorage(filePath.getAbsolutePath(), filename);
     }
 
     public String loadPasteInternalOldStyle(@NonNull String filename, @NonNull boolean contentIsEncrypted, @NonNull String timestampString) {
@@ -346,7 +367,7 @@ public class InternalStorageUtils {
         }
         String tempFilename = pasteTitle.replaceAll(" ", "_");
         return tempFilename + SEPARATOR
-                + timestampString + SEPARATOR + ".txt";
+                + timestampString + SEPARATOR + FILE_EXTENSION;
     }
 
     /**
@@ -372,7 +393,7 @@ public class InternalStorageUtils {
             Log.e(TAG, "the filename was not constructed by the app, aborted");
             return "";
         }
-        return parts[0].replaceAll("_", " ") + parts[2];
+        return parts[0].replaceAll("_", " ");
     }
 
     /**
@@ -444,6 +465,7 @@ public class InternalStorageUtils {
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
                 String fileName = getFilenameReadableString(files[i].getName());
+                String fileNameStorage = files[i].getName();
                 long fileSize = files[i].length();
 
                 System.out.println("* fileName org: " + files[i].getName());
@@ -521,6 +543,7 @@ public class InternalStorageUtils {
                             Date date = new Date(Long.parseLong(timestamp));
                             FileModel fileModel = new FileModel(
                                     fileName,
+                                    fileNameStorage,
                                     fileSize,
                                     visibilityType,
                                     contentType,

@@ -36,6 +36,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".ViewInternalPasteActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ViewPasteActivity"
             android:exported="false">
             <meta-data
