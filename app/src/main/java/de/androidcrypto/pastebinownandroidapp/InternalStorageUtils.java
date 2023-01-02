@@ -24,75 +24,23 @@ public class InternalStorageUtils {
      */
 
     private static final String TAG = "InternalStorageUtils";
-    public static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT:";
-    public static final String UNENCRYPTED_CONTENT = "UNENCRYPTED CONTENT:";
+    public static final String ENCRYPTED_CONTENT = "ENCRYPTED CONTENT";
+    public static final String UNENCRYPTED_CONTENT = "UNENCRYPTED CONTENT";
     public static final String VISIBILITY_TYPE_PUBLIC = "PUBLIC";
     public static final String VISIBILITY_TYPE_PRIVATE = "PRIVATE";
-    public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT:"; // DO NOT CHANGE
+    public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT"; // DO NOT CHANGE
     public static final String URL_HEADER = "URL";
     private final String BASE_FOLDER = "pastes";
     private final String GENERAL_FOLDER = "general"; // new style, stores encrypted and unencrypted pastes
     private final String UNENCRYPTED_FOLDER = "unencrypted"; // old style, only unencrypted pastes
     private final String ENCRYPTED_FOLDER = "encrypted"; // old style, only encrypted pastes
-    private final String SEPARATOR = "###"; // separates the filename from timestamp in full filename
+    public static final String SEPARATOR = "###"; // separates the filename from timestamp in full filename
 
     Context mContext;
 
     public InternalStorageUtils(@NonNull Context mContext) {
         Log.d(TAG, "InternalStorageUtils constructed");
         this.mContext = mContext;
-    }
-
-    /**
-     * There are two versions for reading and writing available:
-     * OldStyle: stores the pastes in UNENCRYPTED or ENCRYPTED folders
-     * regular style: stores all pastes in GENERAL golder
-     */
-
-    /**
-     * This method generates a filenameString from a paste title where all blanks in the name
-     * are converted to '_'. As there are multiple pastes possible this function does add the
-     * timestamp, separated with an '#'.
-     * A file extension '.txt' is added as well
-     */
-    private String getFilenameString(@NonNull String pasteTitle, @NonNull String timestampString) {
-        if (TextUtils.isEmpty(pasteTitle)) {
-            Log.e(TAG, "the paste title is empty so i can not get a file name");
-            return "";
-        }
-        if (TextUtils.isEmpty(timestampString)) {
-            Log.e(TAG, "the time stamp is empty so i can not get a file name");
-            return "";
-        }
-        String tempFilename = pasteTitle.replaceAll(" ", "_");
-        return tempFilename + SEPARATOR
-                + timestampString + SEPARATOR + ".txt";
-    }
-
-    /**
-     * This method generates a readable filenameString from a fileName from internal storage
-     * All '_' are converted to ' ', the timestamp is removed and the extension '.txt' is removed as well
-     */
-    private String getFilenameReadableString(@NonNull String fileName) {
-        if (TextUtils.isEmpty(fileName)) {
-            Log.e(TAG, "the file name is empty so i can not get a  readablefile name");
-            return "";
-        }
-        // split the filename
-        String[] parts = fileName.split(SEPARATOR);
-        Log.i(TAG, "### fileName: " + fileName);
-        Log.i(TAG, "### parts.length: " + parts.length);
-        Log.i(TAG, "### parts[0]: " + parts[0]);
-        if (parts.length > 1) {
-            Log.i(TAG, "### parts[1]: " + parts[1]);
-            Log.i(TAG, "### parts[2]: " + parts[2]);
-        }
-        //System.out.println("### parts.length: " + parts.length);
-        if (parts.length != 3) {
-            Log.e(TAG, "the filename was not constructed by the app, aborted");
-            return "";
-        }
-        return parts[0].replaceAll("_", " ") + parts[2];
     }
 
     public boolean writePasteInternal(@NonNull String filename, @NonNull String content, @NonNull String timestamp, @NonNull boolean contentIsEncrypted, @NonNull boolean contentIsPrivate, @NonNull String url) {
@@ -127,13 +75,13 @@ public class InternalStorageUtils {
         }
         if (contentIsEncrypted) {
             //filePath = new File(basePath, ENCRYPTED_FOLDER);
-            contentHeader = ENCRYPTED_CONTENT + contentHeaderType + contentHeaderUrl + "\n";
+            contentHeader = ENCRYPTED_CONTENT + SEPARATOR + contentHeaderType + contentHeaderUrl + "\n";
         } else {
             //filePath = new File(basePath, UNENCRYPTED_FOLDER);
-            contentHeader = UNENCRYPTED_CONTENT + contentHeaderType + contentHeaderUrl + "\n";
+            contentHeader = UNENCRYPTED_CONTENT + SEPARATOR + contentHeaderType + contentHeaderUrl + "\n";
         }
         filePath = new File(basePath,GENERAL_FOLDER);
-        String timestampString = TIMESTAMP_CONTENT + timestamp + "\n";
+        String timestampString = TIMESTAMP_CONTENT + SEPARATOR + timestamp + "\n";
         return writeToInternalStorage(
                 filePath,
                 getFilenameString(filename, timestamp),
@@ -168,10 +116,10 @@ public class InternalStorageUtils {
         }
         if (contentIsEncrypted) {
             filePath = new File(basePath, ENCRYPTED_FOLDER);
-            contentHeader = ENCRYPTED_CONTENT + contentHeaderType + contentHeaderUrl + "\n";
+            contentHeader = ENCRYPTED_CONTENT + SEPARATOR + contentHeaderType + contentHeaderUrl + "\n";
         } else {
             filePath = new File(basePath, UNENCRYPTED_FOLDER);
-            contentHeader = UNENCRYPTED_CONTENT + contentHeaderType + contentHeaderUrl + "\n";
+            contentHeader = UNENCRYPTED_CONTENT + SEPARATOR + contentHeaderType + contentHeaderUrl + "\n";
         }
         String timestampString = TIMESTAMP_CONTENT + timestamp + "\n";
         return writeToInternalStorage(
@@ -180,6 +128,36 @@ public class InternalStorageUtils {
                 contentHeader + timestampString + content);
     }
 
+    private boolean writeToInternalStorage(@NonNull File basePath, @NonNull String filename, @NonNull String content) {
+        if (TextUtils.isEmpty(basePath.getAbsolutePath())) {
+            Log.e(TAG, "storage aborted, path is empty");
+            return false;
+        }
+        if (TextUtils.isEmpty(filename)) {
+            Log.e(TAG, "storage aborted, filename is empty");
+            return false;
+        }
+        if (TextUtils.isEmpty(content)) {
+            Log.e(TAG, "storage aborted, content is empty");
+            return false;
+        }
+        File dir = new File(mContext.getFilesDir(), basePath.getAbsolutePath());
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        FileWriter writer = null;
+        try {
+            File file = new File(dir, filename);
+            writer = new FileWriter(file);
+            writer.append(content);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage());
+            return false;
+        }
+        return true;
+    }
 
     public String loadPasteInternal(@NonNull String filename, @NonNull boolean contentIsEncrypted, @NonNull String timestampString) {
         if (TextUtils.isEmpty(filename)) {
@@ -287,36 +265,7 @@ public class InternalStorageUtils {
     // todo add an url field for the link with Pastebin.com
 
 
-    private boolean writeToInternalStorage(@NonNull File basePath, @NonNull String filename, @NonNull String content) {
-        if (TextUtils.isEmpty(basePath.getAbsolutePath())) {
-            Log.e(TAG, "storage aborted, path is empty");
-            return false;
-        }
-        if (TextUtils.isEmpty(filename)) {
-            Log.e(TAG, "storage aborted, filename is empty");
-            return false;
-        }
-        if (TextUtils.isEmpty(content)) {
-            Log.e(TAG, "storage aborted, content is empty");
-            return false;
-        }
-        File dir = new File(mContext.getFilesDir(), basePath.getAbsolutePath());
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-        FileWriter writer = null;
-        try {
-            File file = new File(dir, filename);
-            writer = new FileWriter(file);
-            writer.append(content);
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
-            return false;
-        }
-        return true;
-    }
+
 
     private String readFromInternalStorage (@NonNull String path, @NonNull String filename) {
         Log.d(TAG, "readFromInternalStorage, filename: " + filename);
@@ -375,6 +324,58 @@ public class InternalStorageUtils {
     }
 
     /**
+     * There are two versions for reading and writing available:
+     * OldStyle: stores the pastes in UNENCRYPTED or ENCRYPTED folders
+     * regular style: stores all pastes in GENERAL golder
+     */
+
+    /**
+     * This method generates a filenameString from a paste title where all blanks in the name
+     * are converted to '_'. As there are multiple pastes possible this function does add the
+     * timestamp, separated with an '#'.
+     * A file extension '.txt' is added as well
+     */
+    private String getFilenameString(@NonNull String pasteTitle, @NonNull String timestampString) {
+        if (TextUtils.isEmpty(pasteTitle)) {
+            Log.e(TAG, "the paste title is empty so i can not get a file name");
+            return "";
+        }
+        if (TextUtils.isEmpty(timestampString)) {
+            Log.e(TAG, "the time stamp is empty so i can not get a file name");
+            return "";
+        }
+        String tempFilename = pasteTitle.replaceAll(" ", "_");
+        return tempFilename + SEPARATOR
+                + timestampString + SEPARATOR + ".txt";
+    }
+
+    /**
+     * This method generates a readable filenameString from a fileName from internal storage
+     * All '_' are converted to ' ', the timestamp is removed and the extension '.txt' is removed as well
+     */
+    private String getFilenameReadableString(@NonNull String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            Log.e(TAG, "the file name is empty so i can not get a  readablefile name");
+            return "";
+        }
+        // split the filename
+        String[] parts = fileName.split(SEPARATOR);
+        Log.i(TAG, "### fileName: " + fileName);
+        Log.i(TAG, "### parts.length: " + parts.length);
+        Log.i(TAG, "### parts[0]: " + parts[0]);
+        if (parts.length > 1) {
+            Log.i(TAG, "### parts[1]: " + parts[1]);
+            Log.i(TAG, "### parts[2]: " + parts[2]);
+        }
+        //System.out.println("### parts.length: " + parts.length);
+        if (parts.length != 3) {
+            Log.e(TAG, "the filename was not constructed by the app, aborted");
+            return "";
+        }
+        return parts[0].replaceAll("_", " ") + parts[2];
+    }
+
+    /**
      * This method returns the timestamp from the (stripped) content
      * The full content contains a header line that needs to get stripped of before
      * using this method
@@ -387,14 +388,14 @@ public class InternalStorageUtils {
         int indexEnd = content.indexOf('\n');
         // check for indexEnd = -1 means there is no line break
         if (indexEnd == -1) return "";
-        int indexStartBeginner = content.indexOf(TIMESTAMP_CONTENT);
+        int indexStartBeginner = content.indexOf(TIMESTAMP_CONTENT + SEPARATOR);
         if (indexStartBeginner != 0) {
             Log.e(TAG, "there is no timestamp in content");
             return "";
         }
         // System.out.println("*** indexEnd: " + indexEnd);
         // System.out.println("*** indexBeginner: " + indexStartBeginner);
-        return content.substring(indexStartBeginner + TIMESTAMP_CONTENT.length(), indexEnd);
+        return content.substring(indexStartBeginner + (TIMESTAMP_CONTENT + SEPARATOR).length(), indexEnd);
     }
 
     /**
@@ -474,10 +475,10 @@ public class InternalStorageUtils {
                         //break;
                     } else {
                         String contentType;
-                        if (partsLine0[0].contains(UNENCRYPTED_CONTENT)) {
+                        if (partsLine0[0].contains(UNENCRYPTED_CONTENT + SEPARATOR)) {
                             Log.d(TAG, "paste is UNENCRYPTED");
                             contentType = "UNENCRYPTED";
-                        } else if (partsLine0[0].contains(ENCRYPTED_CONTENT)) {
+                        } else if (partsLine0[0].contains(ENCRYPTED_CONTENT+ SEPARATOR)) {
                             Log.d(TAG, "paste is ENCRYPTED");
                             contentType = "ENCRYPTED";
                         } else {
@@ -506,6 +507,7 @@ public class InternalStorageUtils {
                         }
                         // now check if there is a second line
                         if (parts.length > 1) {
+                            Log.i(TAG, "parts[1]: "+ parts[1]);
                             String[] partsLine1 = parts[1].split(SEPARATOR);
                             String timestamp;
                             if (partsLine1[0].contains(TIMESTAMP_CONTENT)) {

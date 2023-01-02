@@ -39,6 +39,7 @@ public class WritePasteActivity extends AppCompatActivity {
     com.google.android.material.textfield.TextInputEditText pasteText;
     Button submit;
 
+    private static final String URL_DEFAULT = "https://pastebin.com/xxx";
     private static final int MINIMAL_PASSPHRASE_LENGTH = 4;
 
     @Override
@@ -58,6 +59,9 @@ public class WritePasteActivity extends AppCompatActivity {
                 Log.d(TAG, "submit clicked");
                 String pasteTitleString = pasteTitle.getText().toString();
                 String pasteTextString = pasteText.getText().toString();
+                boolean pasteIsPrivate = pastePrivate.isChecked();
+                boolean pasteIsEncrypted = pasteEncrypted.isChecked();
+
                 if (TextUtils.isEmpty(pasteTitleString)) {
                     Log.e(TAG, "the title is empty");
                     Snackbar snackbar = Snackbar.make(view, "Please enter a title", Snackbar.LENGTH_LONG);
@@ -73,71 +77,29 @@ public class WritePasteActivity extends AppCompatActivity {
                     return;
                 }
                 // try to send the paste, then try to save the data
-                int visibility;
-                if (pastePrivate.isChecked()) {
-                    visibility = PastebinPaste.VISIBILITY_PRIVATE;
 
+                if (pasteIsPrivate) {
                     Log.i(TAG, "save a private paste");
                 } else {
-                    visibility = PastebinPaste.VISIBILITY_PUBLIC;
-
                     Log.i(TAG, "save a public paste");
                 }
-                String contentHeader = "";
-                String contentHeaderType = "";
-                if (pastePrivate.isChecked()) {
-                    contentHeaderType = InternalStorageUtils.VISIBILITY_TYPE_PRIVATE;
-                    Log.i(TAG, "the paste is private");
-                } else {
-                    contentHeaderType = InternalStorageUtils.VISIBILITY_TYPE_PUBLIC;
-                    Log.i(TAG, "the paste is public");
-                }
-                if (pasteEncrypted.isChecked()) {
-                    contentHeader = InternalStorageUtils.ENCRYPTED_CONTENT + contentHeaderType + "\n";
+                if (pasteIsEncrypted) {
                     Log.i(TAG, "the paste is encrypted");
                 } else {
-                    contentHeader = InternalStorageUtils.UNENCRYPTED_CONTENT + contentHeaderType + "\n";
                     Log.i(TAG, "the paste is unencrypted");
                 }
 
-                /*
-                // create paste, for this we need to login and get an account
-                StorageUtils su = new StorageUtils(view.getContext());
-                boolean credentialsAreSet = su.checkForCredentials();
-                if (!credentialsAreSet) {
-                    Log.d(TAG, "cannot login as not all credentials are set");
-                    Snackbar snackbar = Snackbar.make(view, "Did you set the developer key, user name and password ? aborted", Snackbar.LENGTH_LONG);
-                    snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
-                    snackbar.show();
-                    return;
-                }
-                PastebinAccount account = new PastebinAccount(su.getDeveloperKey(), su.getUserName(), su.getUserPassword());
-                // fetches an user session id
-                try {
-                    account.login();
-                } catch (LoginException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, e.getMessage());
-                    Snackbar snackbar = Snackbar.make(view, "Error during login to Pastebin.com, aborted", Snackbar.LENGTH_LONG);
-                    snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
-                    snackbar.show();
-                    return;
-                }
-
-                 */
                 // get the same timestamp for pastebin.com and internal storage
                 long timestamp = new Date().getTime();
-                String timestampString = InternalStorageUtils.TIMESTAMP_CONTENT
-                        + timestamp + InternalStorageUtils.TIMESTAMP_CONTENT + "\n";
 
-                if (pasteEncrypted.isChecked()) {
+                if (pasteIsEncrypted) {
                     savePasswordProtectedContent(
                             view,
-                            visibility,
-                            contentHeader,
                             pasteTitleString,
                             pasteTextString,
-                            timestampString);
+                            String.valueOf(timestamp),
+                            pasteIsPrivate,
+                            URL_DEFAULT);
                 } else {
 
                     // now save the paste in internal storage
@@ -148,8 +110,8 @@ public class WritePasteActivity extends AppCompatActivity {
                             pasteTextString,
                             String.valueOf(timestamp),
                             false,
-                            pastePrivate.isChecked(),
-                            "https://pastebin.com/xxx");
+                            pasteIsPrivate,
+                            URL_DEFAULT);
                     Log.i(TAG, "unencrypted writeSuccess: " + writeSuccess);
                     if (writeSuccess) {
                         Snackbar snackbar = Snackbar.make(view, "The paste was written to internal storage", Snackbar.LENGTH_SHORT);
@@ -164,71 +126,22 @@ public class WritePasteActivity extends AppCompatActivity {
                     pasteTitle.setText("");
                     pasteText.setText("");
                 }
+            }
+        });
+    }
 
-/*
-                // todo work on encrypted pastes
-                if (pasteEncrypted.isChecked()) {
-                    savePasswordProtectedContent(
+    /*
+    savePasswordProtectedContent(
                             view,
-                            account,
-                            visibility,
-                            contentHeader,
-                            pasteTitleString,
-                            pasteTextString,
-                            timestampString);
-                } else {
-                    PastebinPaste paste = new PastebinPaste(account);
-                    paste.setContents(
-                            contentHeader +
-                                    timestampString +
-                                    pasteTextString);
-                    paste.setPasteTitle(pasteTitleString);
-                    paste.setVisibility(visibility);
-                    // push paste
-                    PastebinLink link = null;
-                    try {
-                        link = paste.paste();
-                        Log.i(TAG, "the paste was posted using this url: " + link.getLink());
-                        // result: https://pastebin.com/WsUGh1br
-                    } catch (PasteException e) {
-                        e.printStackTrace();
-                        Log.e(TAG, e.getMessage());
-                        Snackbar snackbar = Snackbar.make(view, "Error during send a paste to Pastebin.com, aborted", Snackbar.LENGTH_LONG);
-                        snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
-                        snackbar.show();
-                        return;
-                    }
-
-                    Snackbar snackbar = Snackbar.make(view, "The paste was sent successfully to Pastebin.com", Snackbar.LENGTH_SHORT);
-                    snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.green));
-                    snackbar.show();
-
-                    // todo get url from pastebin.com
-
-
-                    // now save the paste in internal storage
-                    InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
-                    // write an unencrypted string
-                    boolean writeSuccess = internalStorageUtils.writePasteInternal(
                             pasteTitleString,
                             pasteTextString,
                             String.valueOf(timestamp),
                             false,
                             pastePrivate.isChecked(),
                             "https://pastebin.com/xxx");
-                    Log.i(TAG, "unencrypted writeSuccess: " + writeSuccess);
+     */
 
-                    // clean data
-                    pasteTitle.setText("");
-                    pasteText.setText("");
-                }
-                */
-            }
-        });
-
-    }
-
-    private void savePasswordProtectedContent(View view, int visibility, String contentHeader, String pasteTitleString, String pasteTextString, String timestampString) {
+    private void savePasswordProtectedContent(View view, String pasteTitleString, String pasteTextString, String timestampString, boolean pasteIsPrivate, String url) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(WritePasteActivity.this);
         String titleString = "Provide the encryption passphrase";
         String messageString = "\nPlease enter a (minimum) 4 character long passphrase and press on\nSAVE DOCUMENT.";
@@ -271,47 +184,15 @@ public class WritePasteActivity extends AppCompatActivity {
                     snackbar.show();
                     return;
                 } else {
-                    /*
-                    PastebinPaste paste = new PastebinPaste(account);
-                    paste.setContents(
-                            contentHeader +
-                                    timestampString +
-                                    pasteTextString);
-                    paste.setPasteTitle(pasteTitleString);
-                    paste.setVisibility(visibility);
-                    // push paste
-                    PastebinLink link = null;
-                    try {
-                        link = paste.paste();
-                    } catch (PasteException e) {
-                        e.printStackTrace();
-                        Log.e(TAG, e.getMessage());
-                        Snackbar snackbar = Snackbar.make(view, "Error during send a paste to Pastebin.com, aborted", Snackbar.LENGTH_LONG);
-                        snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.red));
-                        snackbar.show();
-                        return;
-                    }
-                    Snackbar snackbar = Snackbar.make(view, "The paste was sent successfully to Pastebin.com", Snackbar.LENGTH_SHORT);
-                    snackbar.setBackgroundTint(ContextCompat.getColor(WritePasteActivity.this, R.color.green));
-                    snackbar.show();
-                    */
-
                     // now save the paste in internal storage
                     InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
-                    // check if paste is private
-                    boolean pasteIsPrivate = false;
-                    if (visibility == PastebinPaste.VISIBILITY_PRIVATE) pasteIsPrivate = true;
-                    // write an unencrypted string
-
-                    // todo get pastebin.com url
-
                     boolean writeSuccess = internalStorageUtils.writePasteInternal(
                             pasteTitleString,
-                            pasteTextString,
+                            ciphertext,
                             timestampString,
                             true,
                             pasteIsPrivate,
-                            "https://pastebin.com/xxx");
+                            url);
                     Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
                     if (writeSuccess) {
                         Snackbar snackbar = Snackbar.make(view, "The paste was written to internal storage", Snackbar.LENGTH_SHORT);

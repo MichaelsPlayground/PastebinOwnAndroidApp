@@ -91,10 +91,10 @@ public class SendPasteActivity extends AppCompatActivity {
                     Log.i(TAG, "the paste is public");
                 }
                 if (pasteEncrypted.isChecked()) {
-                    contentHeader = InternalStorageUtils.ENCRYPTED_CONTENT + contentHeaderType + "\n";
+                    contentHeader = InternalStorageUtils.ENCRYPTED_CONTENT + InternalStorageUtils.SEPARATOR + contentHeaderType + "\n";
                     Log.i(TAG, "the paste is encrypted");
                 } else {
-                    contentHeader = InternalStorageUtils.UNENCRYPTED_CONTENT + contentHeaderType + "\n";
+                    contentHeader = InternalStorageUtils.UNENCRYPTED_CONTENT + InternalStorageUtils.SEPARATOR + contentHeaderType + "\n";
                     Log.i(TAG, "the paste is unencrypted");
                 }
                 // create paste, for this we need to login and get an account
@@ -121,8 +121,8 @@ public class SendPasteActivity extends AppCompatActivity {
                 }
                 // get the same timestamp for pastebin.com and internal storage
                 long timestamp = new Date().getTime();
-                String timestampString = InternalStorageUtils.TIMESTAMP_CONTENT
-                        + timestamp + InternalStorageUtils.TIMESTAMP_CONTENT + "\n";
+                String timestampString = InternalStorageUtils.TIMESTAMP_CONTENT + InternalStorageUtils.SEPARATOR
+                        + timestamp + InternalStorageUtils.TIMESTAMP_CONTENT + InternalStorageUtils.SEPARATOR + "\n";
 
 
                 // todo work on encrypted pastes
