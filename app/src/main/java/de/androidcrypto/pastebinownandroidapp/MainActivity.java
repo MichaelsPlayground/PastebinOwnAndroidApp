@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     Button enterDeveloperKey, enterUserCredentials;
     Button login, selectPaste, listPastes, pastePublicNoExpiration;
     Button selectInternalPaste, selectInternalSimplePaste;
-    Button sendPaste;
+    Button sendPaste, writePaste;
 
     Button encryptAString, mainBrowseFolder;
 
@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         listPastes = findViewById(R.id.btnMainListPastes);
         sendPaste = findViewById(R.id.btnMainSendPaste);
+        writePaste = findViewById(R.id.btnMainWritePaste);
 
         pastePublicNoExpiration = findViewById(R.id.btnPastePublicNoExpiration);
 
@@ -164,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 account = PastebinLoginUtils.account;
                 getUrlData.setText("userKey: " + PastebinLoginUtils.pastebinUserKey);
                 Log.d(TAG, "successfully loged in to Pastebin, userKey: " + PastebinLoginUtils.pastebinUserKey);
+
                 /*
                 // check for stored credentials (developer key, user name and password)
                 boolean credentialsAreSet = checkForCredentials();
@@ -303,6 +305,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, SendPasteActivity.class);
+                startActivity(intent);
+                //finish();
+            }
+        });
+
+        writePaste.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, WritePasteActivity.class);
                 startActivity(intent);
                 //finish();
             }

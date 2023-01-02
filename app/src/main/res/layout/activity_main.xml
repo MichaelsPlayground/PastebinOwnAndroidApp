@@ -82,6 +82,12 @@
                 android:text="send a paste" />
 
             <Button
+                android:id="@+id/btnMainWritePaste"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="write a paste only (no publishing)" />
+
+            <Button
                 android:id="@+id/btnPastePublicNoExpiration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
