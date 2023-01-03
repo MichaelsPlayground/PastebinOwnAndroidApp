@@ -1,5 +1,7 @@
 package de.androidcrypto.pastebinownandroidapp;
 
+import static de.androidcrypto.pastebinownandroidapp.InternalStorageUtils.URL_DEFAULT;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -39,7 +41,7 @@ public class WritePasteActivity extends AppCompatActivity {
     com.google.android.material.textfield.TextInputEditText pasteText;
     Button submit;
 
-    private static final String URL_DEFAULT = "https://pastebin.com/xxx";
+    //private static final String URL_DEFAULT = "https://pastebin.com/xxx";
     private static final int MINIMAL_PASSPHRASE_LENGTH = 4;
 
     @Override

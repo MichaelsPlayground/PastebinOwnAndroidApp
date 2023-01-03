@@ -16,23 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAdapter.MyViewHolder> {
+public class PastesInternalAdapterV1 extends RecyclerView.Adapter<PastesInternalAdapterV1.MyViewHolder> {
 
     private static final String TAG = "PastesInternalAdapter";
 
     private ArrayList<FileModel> mPasteList;
     private Context mContext;
-    private boolean mSyncedPastes;
+    private boolean mEncryptedPastes;
 
     //public PastesAdapter(String data) {
-    public PastesInternalAdapter(ArrayList<FileModel> pasteList, Context context, boolean pasteIsSynced) {
+    public PastesInternalAdapterV1(ArrayList<FileModel> pasteList, Context context, boolean pasteIsEncrypted) {
         //super();
 
         System.out.println("### PastesInternalAdapter INIT ###");
         System.out.println("*** PastesAdapter received items: " + pasteList.size());
         this.mPasteList = pasteList;
         this.mContext = context;
-        this.mSyncedPastes = pasteIsSynced;
+        this.mEncryptedPastes = pasteIsEncrypted;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
 
     @NonNull
     @Override
-    public PastesInternalAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PastesInternalAdapterV1.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_internal_pastes, parent, false);
         // View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_home_pastes, parent, false);
         return new MyViewHolder(v);
@@ -56,10 +56,6 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
-        // todo show and select synced only
-        // when mSyncedPastes == TRUE
-
         //PasteModel pasteModel = mPasteList.get(position);
         FileModel fileModel = mPasteList.get(position);
         String filename = fileModel.getFileName();
@@ -105,17 +101,6 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
         } else {
             holder.encrypt_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_open_24));
         }
-        // check for sync status
-        if (fileModel.getUrl().equals(InternalStorageUtils.URL_DEFAULT)) {
-            // no sync
-            holder.sync_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_sync_disabled_24));
-        } else {
-            // sync is done
-            holder.sync_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_sync_24));
-        }
-
-
-
 
         //Timestamp stamp = new Timestamp(Integer.parseInt(pasteModel.));
         //Date date = new Date(pasteModel.getPasteDate());
@@ -138,7 +123,6 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
                 intent.putExtra("TIMESTAMP", String.valueOf(mPasteList.get(holder.getAdapterPosition()).getTimestamp()));
                 intent.putExtra("VISIBILITY_TYPE", mPasteList.get(holder.getAdapterPosition()).getVisibilityType());
                 intent.putExtra("CONTENT_TYPE", mPasteList.get(holder.getAdapterPosition()).getContentType());
-                //intent.putExtra("SYNC_STATUS", mPasteList.get(holder.getAdapterPosition()).getContentType());
                 mContext.startActivity(intent);
 
 
@@ -187,7 +171,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
     public TextView paste_title, paste_expire;
     public TextView paste_date, paste_link;
     LinearLayout container;
-    ImageView private_ind, encrypt_ind, sync_ind;
+    ImageView private_ind, encrypt_ind;
 
     public MyViewHolder(View itemView) {
         super(itemView);
@@ -198,7 +182,6 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
         container = (LinearLayout) itemView.findViewById(R.id.llcontainer);
         private_ind = (ImageView) itemView.findViewById(R.id.private_ind);
         encrypt_ind = itemView.findViewById(R.id.encrypt_ind);
-        sync_ind = itemView.findViewById(R.id.sync_ind);
     }
 }
 }

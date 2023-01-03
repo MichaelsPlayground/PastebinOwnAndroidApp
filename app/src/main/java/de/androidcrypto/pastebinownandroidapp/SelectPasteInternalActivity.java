@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class SelectPasteInternalActivity extends AppCompatActivity {
     final String TAG = "selectPasteInternalActivity";
 
-    SwitchMaterial pasteEncrypted;
+    SwitchMaterial pasteSynced;
 
     RecyclerView recyclerView;
     //androidx.swiperefreshlayout.widget.SwipeRefreshLayout srl;
@@ -36,7 +36,7 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
     private PastesInternalAdapter pastesInternalAdapter;
     //private ArrayList<PasteModel> pasteArrayList;
 
-    private boolean listEncrypted = false; // default
+    private boolean listSynced = false; // default
     private ArrayList<FileModel> pastesArrayList = new ArrayList<>();
 
 
@@ -57,22 +57,22 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
 
          */
 
-        pasteEncrypted = findViewById(R.id.swSPIEncrypted);
+        pasteSynced = findViewById(R.id.swSPISnyc);
         recyclerView = (RecyclerView) findViewById(R.id.rvSPI);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
         // adding our array list to our recycler view adapter class.
-        pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, this, listEncrypted);
+        pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, this, listSynced);
         // setting adapter to our recycler view.
         recyclerView.setAdapter(pastesInternalAdapter);
-        getInternalPastes(this, listEncrypted);
+        getInternalPastes(this, listSynced);
 
-        pasteEncrypted.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        pasteSynced.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                listEncrypted = pasteEncrypted.isChecked();
-                getInternalPastes(getApplicationContext(), listEncrypted);
+                listSynced = pasteSynced.isChecked();
+                getInternalPastes(getApplicationContext(), listSynced);
             }
         });
     }
@@ -87,7 +87,7 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
         for (int i = 0; i < pastesArrayList.size(); i++) {
             System.out.println("pos " + i + " fn: " + pastesArrayList.get(i));
         }
-        pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, context, listEncrypted);
+        pastesInternalAdapter = new PastesInternalAdapter(pastesArrayList, context, listSynced);
         pastesInternalAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(pastesInternalAdapter);
     }

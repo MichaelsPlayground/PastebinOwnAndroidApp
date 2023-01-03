@@ -30,6 +30,7 @@ public class InternalStorageUtils {
     public static final String VISIBILITY_TYPE_PRIVATE = "PRIVATE";
     public static final String TIMESTAMP_CONTENT = "TIMESTAMP CONTENT"; // DO NOT CHANGE
     public static final String URL_HEADER = "URL";
+    public static final String URL_DEFAULT = "https://pastebin.com/xxx";
     private final String BASE_FOLDER = "pastes";
     private final String GENERAL_FOLDER = "general"; // new style, stores encrypted and unencrypted pastes
     private final String UNENCRYPTED_FOLDER = "unencrypted"; // old style, only unencrypted pastes
