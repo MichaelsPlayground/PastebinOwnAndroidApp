@@ -497,12 +497,12 @@ public class InternalStorageUtils {
                         //break;
                     } else {
                         String contentType;
-                        if (partsLine0[0].contains(UNENCRYPTED_CONTENT + SEPARATOR)) {
+                        if (partsLine0[0].contains(UNENCRYPTED_CONTENT)) {
                             Log.d(TAG, "paste is UNENCRYPTED");
-                            contentType = "UNENCRYPTED";
-                        } else if (partsLine0[0].contains(ENCRYPTED_CONTENT+ SEPARATOR)) {
+                            contentType = UNENCRYPTED_CONTENT;
+                        } else if (partsLine0[0].contains(ENCRYPTED_CONTENT)) {
                             Log.d(TAG, "paste is ENCRYPTED");
-                            contentType = "ENCRYPTED";
+                            contentType = ENCRYPTED_CONTENT;
                         } else {
                             Log.d(TAG, "paste is of UNDEFINED CONTENT TYPE");
                             contentType = "UNDEFINED";

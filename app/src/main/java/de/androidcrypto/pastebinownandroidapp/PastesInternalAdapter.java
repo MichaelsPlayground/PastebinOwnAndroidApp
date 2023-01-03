@@ -102,7 +102,6 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
             holder.encrypt_ind.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_baseline_lock_open_24));
         }
 
-
         //Timestamp stamp = new Timestamp(Integer.parseInt(pasteModel.));
         //Date date = new Date(pasteModel.getPasteDate());
 
