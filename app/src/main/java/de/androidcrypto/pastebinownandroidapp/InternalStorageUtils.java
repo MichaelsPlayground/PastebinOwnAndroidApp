@@ -219,7 +219,7 @@ public class InternalStorageUtils {
     }
 
     // returns the filenames
-    public ArrayList<String> listPastesInternal(@NonNull boolean contentIsEncrypted) {
+    public ArrayList<String> listPastesInternal(@NonNull boolean contentIsSynced) {
         File basePath = new File(BASE_FOLDER);
         // create the directory
         //boolean basePathExists = basePath.mkdirs();
@@ -251,7 +251,7 @@ public class InternalStorageUtils {
 
     // datafields: fileName, fileSize, contentHeaderType (PRIVATE OR PUBLIC),
     // contentType (ENCRYPTED or UNENCRYPTED), timestamp (long), date (Date), url
-    public ArrayList<FileModel> listPastesInternalModel(@NonNull boolean contentIsEncrypted) {
+    public ArrayList<FileModel> listPastesInternalModel(@NonNull boolean pasteIsNotSynced) {
         FileModel fileModel;
         File basePath = new File(BASE_FOLDER);
         // create the directory
@@ -265,7 +265,7 @@ public class InternalStorageUtils {
         }
 */
         filePath = new File(basePath, GENERAL_FOLDER);
-        return listInternalFilesModel(filePath.getAbsolutePath());
+        return listInternalFilesModel(filePath.getAbsolutePath(), pasteIsNotSynced);
     }
 
     // datafields: fileName, fileSize, contentHeaderType (PRIVATE OR PUBLIC),
@@ -281,13 +281,10 @@ public class InternalStorageUtils {
         } else {
             filePath = new File(basePath, UNENCRYPTED_FOLDER);
         }
-        return listInternalFilesModel(filePath.getAbsolutePath());
+        return listInternalFilesModel(filePath.getAbsolutePath(), false);
     }
 
     // todo add an url field for the link with Pastebin.com
-
-
-
 
     private String readFromInternalStorage (@NonNull String path, @NonNull String filename) {
         Log.d(TAG, "readFromInternalStorage, filename: " + filename);
@@ -448,9 +445,10 @@ public class InternalStorageUtils {
      * This method lists all filenames and returns a ArrayList of files of FileModel class
      * for this it needs to read all entries
      * @param path is the folder that is listed
+     * @param pasteIsNotSynced: if true list only files where the url is the URL_DEFAULT
      * @return
      */
-    private ArrayList<FileModel> listInternalFilesModel(@NonNull String path) {
+    private ArrayList<FileModel> listInternalFilesModel(@NonNull String path, @NonNull boolean pasteIsNotSynced) {
         ArrayList<FileModel> tempList = new ArrayList<>();
         File internalStorageDir = new File(mContext.getFilesDir(), path);
         File[] files = internalStorageDir.listFiles();
@@ -552,7 +550,18 @@ public class InternalStorageUtils {
                                     date,
                                     url
                             );
-                            tempList.add(fileModel);
+                            // if pasteIsNotSynced = TRUE then we should list only pastes where url = URL_DEFAULT
+                            if (pasteIsNotSynced) {
+                                // we list only files where url = URL_DEFAULT
+                                if (url.equals(URL_DEFAULT)) {
+                                    tempList.add(fileModel);
+                                }
+                            } else {
+                                // we list each file
+                                tempList.add(fileModel);
+                            }
+
+
                         }
                     }
                 } else {

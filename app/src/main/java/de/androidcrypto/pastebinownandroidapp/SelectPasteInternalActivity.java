@@ -77,11 +77,11 @@ public class SelectPasteInternalActivity extends AppCompatActivity {
         });
     }
 
-    private void getInternalPastes(Context context, boolean listEncryptedFiles) {
+    private void getInternalPastes(Context context, boolean listSyncedFiles) {
         Log.i(TAG, "getInternalPastes");
         pastesArrayList = new ArrayList<>();
         InternalStorageUtils internalStorageUtils = new InternalStorageUtils(context);
-        pastesArrayList = internalStorageUtils.listPastesInternalModel(listEncryptedFiles);
+        pastesArrayList = internalStorageUtils.listPastesInternalModel(listSyncedFiles);
         Log.i(TAG, "pastesArrayList contains entries: " + pastesArrayList.size());
         System.out.println("getInternalPastes, filenames");
         for (int i = 0; i < pastesArrayList.size(); i++) {
