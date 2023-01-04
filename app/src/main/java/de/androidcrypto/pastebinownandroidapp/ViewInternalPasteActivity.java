@@ -1,15 +1,25 @@
 package de.androidcrypto.pastebinownandroidapp;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.nio.charset.StandardCharsets;
 
@@ -17,15 +27,21 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
 
     private static final String TAG = "ViewInternalPasteAct";
 
-    com.google.android.material.textfield.TextInputEditText content;
+    com.google.android.material.textfield.TextInputEditText pasteTitle;
+    com.google.android.material.textfield.TextInputEditText pasteText;
     Button save, loadUnencrypted, loadEncrypted;
+
+    private String rawContent; // may be encrypted
+
+    private static final int MINIMAL_PASSPHRASE_LENGTH = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_internal_paste);
 
-        content = findViewById(R.id.etVIPContent);
+        pasteTitle = findViewById(R.id.etVIPPasteTitle);
+        pasteText = findViewById(R.id.etVIPContent);
         save = findViewById(R.id.btnVIPSave);
         loadUnencrypted = findViewById(R.id.btnVIPLoadUnencrypted);
         loadEncrypted = findViewById(R.id.btnVIPLoadEncrypted);
@@ -44,7 +60,8 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
             //String filename = "test";
             InternalStorageUtils internalStorageUtils = new InternalStorageUtils(getApplicationContext());
             String contentFullString = internalStorageUtils.loadPasteInternal(filenameStorage);
-            content.setText(getRawContent2Lines(contentFullString));
+            pasteTitle.setText(filename);
+            pasteText.setText(getRawContent2Lines(contentFullString));
             // get the actual timestamp
             //long timestamp = new Date().getTime();
             //String timestampPaste = "1672403428006";
@@ -52,6 +69,7 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
             // the method to retrieve the timestamp from a stored paste is in InternalStorageUtils
             // to use the method we need to strip off the first line of the content
             String tempContent = getRawContent(contentFullString);
+            rawContent = getRawContent2Lines(contentFullString);
             String timestampPaste = internalStorageUtils.returnTimestampFromContent(tempContent);
             System.out.println("*** timestampPaste: " + timestampPaste);
             //String timestampPasteOld = "1572403428006";
@@ -122,7 +140,7 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
                 String filename = "test";
                 InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
                 String contentFullString = internalStorageUtils.loadPasteInternal(filename, false, "1672577506489");
-                content.setText(getRawContent2Lines(contentFullString));
+                pasteText.setText(getRawContent2Lines(contentFullString));
                 // get the actual timestamp
                 //long timestamp = new Date().getTime();
                 //String timestampPaste = "1672403428006";
@@ -148,23 +166,41 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "load encrypted");
-                String filename = "test";
-                InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
-                String encryptedContent = internalStorageUtils.loadPasteInternal(filename, true, "1672577506489");
+
+                // simple anonymus alert dialog
+                // source: https://stackoverflow.com/a/47978118/8166854
+                new AlertDialog.Builder(view.getContext()).setTitle("Paste is encrypted")
+                        .setMessage("Do you want to decrypt it ?")
+                        // show in device language instead of fixed string
+                        // android.R.string.yes
+                        //.setPositiveButton("YES",
+                        .setPositiveButton(android.R.string.yes,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(ViewInternalPasteActivity.this, "type in the password to decrypt the content", Toast.LENGTH_SHORT).show();
+                                        loadPasswordProtectedContent(view);
+                                        // Perform Action & Dismiss dialog
+                                        dialog.dismiss();
+                                    }
+                                })
+                        // android.R.string.no
+                        //.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Do nothing
+                                Toast.makeText(ViewInternalPasteActivity.this, "no decryption", Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+
+                String demo = "cQ4Gg6K9nFCCKAW6MtQT88OukB/8cfbr3ZaiyLkR34/nZ3ECq0C778NP1WSKmG44ULa3FI3n8CVaXJxbRR4vmWRS3oO+sIOEDOm4WZktlEm4LCDBpZzNPg==";
+                System.out.println("demo: " + demo);
                 EncryptionUtils encryptionUtils = new EncryptionUtils();
-                if (!TextUtils.isEmpty(encryptedContent)) {
-                    // strip off the first two lines
-                    String rawEncryptedContent = getRawContent2Lines(encryptedContent);
-                    System.out.println("rawEncryptedContent:" + rawEncryptedContent + "###");
-                    String unencryptedContent = encryptionUtils.doDecryptionAesGcmPbkdf2(
-                            "1234".toCharArray(), rawEncryptedContent
-                            );
-                    if (TextUtils.isEmpty(unencryptedContent)) {
-                        content.setText("could not decrypt content");
-                    } else {
-                        content.setText(unencryptedContent);
-                    }
-                }
+                String decryptedtxt = encryptionUtils.doDecryptionAesGcmPbkdf2("1234".toCharArray(), demo);
+                System.out.println("decry: " + decryptedtxt);
 
 
             }
@@ -190,8 +226,6 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
         String tempContent = content.substring(content.indexOf('\n')+1);
         return tempContent.substring(tempContent.indexOf('\n')+1);
     }
-
-
 
     /**
      * This method compares two timestamps
@@ -225,5 +259,69 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
         if (timestampA < timestampB) return -1;
         if (timestampA > timestampB) return 1;
         return 92;
+    }
+
+    private void loadPasswordProtectedContent(View view) {
+        Context context = ViewInternalPasteActivity.this;
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(ViewInternalPasteActivity.this);
+        String titleString = "Provide the encryption passphrase";
+        String messageString = "\nPlease enter a (minimum) 4 character long passphrase and press on\nSAVE DOCUMENT.";
+        String hintString = "  passphrase";
+
+        alertDialog.setTitle(titleString);
+        alertDialog.setMessage(messageString);
+        final EditText passphrase = new EditText(context);
+        passphrase.setBackground(ResourcesCompat.getDrawable(getResources(),R.drawable.round_rect_shape, null));
+        passphrase.setHint(hintString);
+        passphrase.setPadding(50, 20, 50, 20);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp1.setMargins(36, 36, 36, 36);
+        passphrase.setLayoutParams(lp1);
+        RelativeLayout container = new RelativeLayout(context);
+        RelativeLayout.LayoutParams rlParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        container.setLayoutParams(rlParams);
+        container.addView(passphrase);
+        alertDialog.setView(container);
+        alertDialog.setPositiveButton("DECRYPT DOCUMENT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int passphraseLength = passphrase.length();
+                char[] password = new char[passphraseLength];
+                passphrase.getText().getChars(0, passphraseLength, password, 0);
+                // test on password length
+                if (passphraseLength < MINIMAL_PASSPHRASE_LENGTH) {
+                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "The passphrase is too short", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                EncryptionUtils encryptionUtils = new EncryptionUtils();
+                System.out.println("### rawContent: " + rawContent);
+                String decryptedtext = encryptionUtils.doDecryptionAesGcmPbkdf2(password, rawContent);
+                if (TextUtils.isEmpty(decryptedtext)) {
+                    Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Could not decrypt the paste", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.red));
+                    snackbar.show();
+                    return;
+                } else {
+                    // now show the paste
+                    pasteText.setText(decryptedtext);
+                    Log.i(TAG, "decrypted loadSuccess");
+                    return;
+                }
+            }
+        });
+        alertDialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "load an encrypted paste was cancelled", Snackbar.LENGTH_LONG);
+                snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.red));
+                snackbar.show();
+                return;
+            }
+        });
+        alertDialog.show();
     }
 }

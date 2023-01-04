@@ -1,7 +1,10 @@
 package de.androidcrypto.pastebinownandroidapp;
 
+import static de.androidcrypto.pastebinownandroidapp.InternalStorageUtils.URL_DEFAULT;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -18,7 +23,7 @@ public class InternalStorageActivity extends AppCompatActivity {
     private static final String TAG = "InternalStorageAct";
 
     com.google.android.material.textfield.TextInputEditText content;
-    Button save, loadUnencrypted, loadEncrypted;
+    Button save, loadUnencrypted, loadEncrypted, generateTestPastes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +34,7 @@ public class InternalStorageActivity extends AppCompatActivity {
         save = findViewById(R.id.btnISASave);
         loadUnencrypted = findViewById(R.id.btnISALoadUnencrypted);
         loadEncrypted = findViewById(R.id.btnISALoadEncrypted);
+        generateTestPastes = findViewById(R.id.btnISAGenerateTestPastes);
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,39 +128,98 @@ public class InternalStorageActivity extends AppCompatActivity {
                     System.out.println("rawEncryptedContent:" + rawEncryptedContent + "###");
                     String unencryptedContent = encryptionUtils.doDecryptionAesGcmPbkdf2(
                             "1234".toCharArray(), rawEncryptedContent
-                            );
+                    );
                     if (TextUtils.isEmpty(unencryptedContent)) {
                         content.setText("could not decrypt content");
                     } else {
                         content.setText(unencryptedContent);
                     }
                 }
-
-
             }
         });
 
+        generateTestPastes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "generate test pastes");
+                String password = "1234";
+                for (int i = 1; i < 3; i++) {
+                    String pasteTitleString = "Test paste " + i;
+                    String pasteTextString = "This is the text for paste " + i;
+                    long timestamp = new Date().getTime();
+                    boolean pasteIsPrivate = false;
+                    boolean pasteIsEncrypted = false;
+
+                    InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
+                    // write an unencrypted string
+                    boolean writeSuccess = internalStorageUtils.writePasteInternal(
+                            pasteTitleString,
+                            pasteTextString,
+                            String.valueOf(timestamp),
+                            pasteIsEncrypted,
+                            pasteIsPrivate,
+                            URL_DEFAULT);
+
+                    pasteIsPrivate = true;
+                    timestamp = new Date().getTime();
+                    writeSuccess = internalStorageUtils.writePasteInternal(
+                            pasteTitleString,
+                            pasteTextString,
+                            String.valueOf(timestamp),
+                            pasteIsEncrypted,
+                            pasteIsPrivate,
+                            URL_DEFAULT);
+
+                    pasteIsEncrypted = true;
+                    EncryptionUtils encryptionUtils = new EncryptionUtils();
+                    String ciphertext = encryptionUtils.doEncryptionAesGcmPbkdf2(password.toCharArray(), pasteTextString.getBytes(StandardCharsets.UTF_8));
+                    pasteIsPrivate = false;
+                    timestamp = new Date().getTime();
+                    internalStorageUtils = new InternalStorageUtils(view.getContext());
+                    writeSuccess = internalStorageUtils.writePasteInternal(
+                            pasteTitleString,
+                            ciphertext,
+                            String.valueOf(timestamp),
+                            pasteIsEncrypted,
+                            pasteIsPrivate,
+                            URL_DEFAULT);
+
+                    pasteIsPrivate = true;
+                    timestamp = new Date().getTime();
+                    internalStorageUtils = new InternalStorageUtils(view.getContext());
+                    writeSuccess = internalStorageUtils.writePasteInternal(
+                            pasteTitleString,
+                            ciphertext,
+                            String.valueOf(timestamp),
+                            pasteIsEncrypted,
+                            pasteIsPrivate,
+                            URL_DEFAULT);
+                }
+                Toast.makeText(InternalStorageActivity.this, "test pastes created", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
      * This method strips off the first line of content
+     *
      * @param content
      * @return the content excluding the first line
      */
-    private String getRawContent (@NonNull String content) {
-        return content.substring(content.indexOf('\n')+1);
+    private String getRawContent(@NonNull String content) {
+        return content.substring(content.indexOf('\n') + 1);
     }
 
     /**
      * This method strips off the first two lines of content
+     *
      * @param content
      * @return the content excluding the first two lines
      */
-    private String getRawContent2Lines (@NonNull String content) {
-        String tempContent = content.substring(content.indexOf('\n')+1);
-        return tempContent.substring(tempContent.indexOf('\n')+1);
+    private String getRawContent2Lines(@NonNull String content) {
+        String tempContent = content.substring(content.indexOf('\n') + 1);
+        return tempContent.substring(tempContent.indexOf('\n') + 1);
     }
-
 
 
     /**

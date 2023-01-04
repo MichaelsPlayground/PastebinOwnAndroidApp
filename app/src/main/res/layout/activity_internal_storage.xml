@@ -76,4 +76,13 @@
         android:layout_marginEnd="16dp"
         android:text="load encrypted from internal storage" />
 
+    <Button
+        android:id="@+id/btnISAGenerateTestPastes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="generate test pastes in internal storage" />
+
 </LinearLayout>
