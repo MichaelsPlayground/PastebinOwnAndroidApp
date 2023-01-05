@@ -45,8 +45,7 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
         save = findViewById(R.id.btnVIPSave);
         loadUnencrypted = findViewById(R.id.btnVIPLoadUnencrypted);
         loadEncrypted = findViewById(R.id.btnVIPLoadEncrypted);
-
-
+        
         Intent intent = getIntent();
         String filename = intent.getStringExtra("FILENAME");
         String filenameStorage = intent.getStringExtra("FILENAME_STORAGE");

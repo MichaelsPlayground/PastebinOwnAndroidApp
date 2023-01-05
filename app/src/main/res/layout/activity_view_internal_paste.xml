@@ -80,6 +80,19 @@
             tools:ignore="KeyboardInaccessibleWidget" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="Sync with Pastebin.com"
+        app:backgroundTint="@color/orange"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        app:icon="@drawable/ic_baseline_sync_24"
+        app:iconGravity="start"/>
+
     <Button
         android:id="@+id/btnVIPSave"
         android:layout_width="match_parent"
