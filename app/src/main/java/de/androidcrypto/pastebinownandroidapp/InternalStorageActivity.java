@@ -59,9 +59,9 @@ public class InternalStorageActivity extends AppCompatActivity {
                 System.out.println("sampleCiphertextString:\n" + sampleCiphertextString);
 
                 // get the actual timestamp
-                //long timestamp = new Date().getTime();
+                long timestamp = new Date().getTime();
                 // use a dummy timestamp
-                long timestamp = Long.parseLong("1672577506489");
+                //long timestamp = Long.parseLong("1672577506489");
                 InternalStorageUtils internalStorageUtils = new InternalStorageUtils(view.getContext());
                 // write an unencrypted string
                 boolean writeSuccess = internalStorageUtils.writePasteInternal(
@@ -79,7 +79,7 @@ public class InternalStorageActivity extends AppCompatActivity {
                         String.valueOf(timestamp),
                         true,
                         false,
-                        "https://pastebin.com/xxx");
+                        "https://pastebin.com/abcdef");
                 Log.i(TAG, "encrypted writeSuccess: " + writeSuccess);
 
             }
@@ -168,13 +168,13 @@ public class InternalStorageActivity extends AppCompatActivity {
                             String.valueOf(timestamp),
                             pasteIsEncrypted,
                             pasteIsPrivate,
-                            URL_DEFAULT);
+                            "https://pastebin.com/asdfg");
 
+                    pasteIsPrivate = false;
                     pasteIsEncrypted = true;
+                    timestamp = new Date().getTime();
                     EncryptionUtils encryptionUtils = new EncryptionUtils();
                     String ciphertext = encryptionUtils.doEncryptionAesGcmPbkdf2(password.toCharArray(), pasteTextString.getBytes(StandardCharsets.UTF_8));
-                    pasteIsPrivate = false;
-                    timestamp = new Date().getTime();
                     internalStorageUtils = new InternalStorageUtils(view.getContext());
                     writeSuccess = internalStorageUtils.writePasteInternal(
                             pasteTitleString,
@@ -193,7 +193,7 @@ public class InternalStorageActivity extends AppCompatActivity {
                             String.valueOf(timestamp),
                             pasteIsEncrypted,
                             pasteIsPrivate,
-                            URL_DEFAULT);
+                            "https://pastebin.com/asdfg");
                 }
                 Toast.makeText(InternalStorageActivity.this, "test pastes created", Toast.LENGTH_SHORT).show();
             }

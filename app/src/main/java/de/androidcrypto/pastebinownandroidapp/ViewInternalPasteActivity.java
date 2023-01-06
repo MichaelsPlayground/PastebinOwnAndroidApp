@@ -21,6 +21,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import org.jpaste.pastebin.PastebinPaste;
+
 import java.nio.charset.StandardCharsets;
 
 public class ViewInternalPasteActivity extends AppCompatActivity {
@@ -29,9 +31,12 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
 
     com.google.android.material.textfield.TextInputEditText pasteTitle;
     com.google.android.material.textfield.TextInputEditText pasteText;
+    com.google.android.material.button.MaterialButton sync;
     Button save, loadUnencrypted, loadEncrypted;
 
     private String rawContent; // may be encrypted
+    String visibilityType;
+    String contentType;
 
     private static final int MINIMAL_PASSPHRASE_LENGTH = 4;
 
@@ -42,6 +47,7 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
 
         pasteTitle = findViewById(R.id.etVIPPasteTitle);
         pasteText = findViewById(R.id.etVIPContent);
+        sync = findViewById(R.id.btnVIPSync);
         save = findViewById(R.id.btnVIPSave);
         loadUnencrypted = findViewById(R.id.btnVIPLoadUnencrypted);
         loadEncrypted = findViewById(R.id.btnVIPLoadEncrypted);
@@ -50,8 +56,14 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
         String filename = intent.getStringExtra("FILENAME");
         String filenameStorage = intent.getStringExtra("FILENAME_STORAGE");
         String timestamp = intent.getStringExtra("TIMESTAMP");
-        String visibilityType = intent.getStringExtra("VISIBILITY_TYPE");
-        String contentType = intent.getStringExtra("CONTENT_TYPE");
+        visibilityType = intent.getStringExtra("VISIBILITY_TYPE"); // PUBLIC, PRIVATE
+        contentType = intent.getStringExtra("CONTENT_TYPE"); // UNENCRYPTED, ENCRYPTED
+        //intent.putExtra("SYNC_STATUS", "UNSYNCED");
+        String syncStatus = intent.getStringExtra("SYNC_STATUS");
+        if (syncStatus.equals("UNSYNCED")) {
+            sync.setVisibility(View.VISIBLE);
+        }
+
         // todo check that all data are provided
         Log.d(TAG, "filenameStorage received: " + filenameStorage);
         if (!TextUtils.isEmpty(filename)) {
@@ -82,6 +94,36 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
             Toast.makeText(ViewInternalPasteActivity.this, "Paste Timestamp is " + resultTimestampCompareString, Toast.LENGTH_LONG).show();
 
         }
+
+        sync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "sync with Pastebin.com");
+                // check that an internet connect is available
+                if (!PastebinLoginUtils.deviceIsOnline()) {
+                    Log.e(TAG, "the user is not logged in or an internet connect is not available, sync aborted");
+                    Snackbar snackbar = Snackbar.make(view, "Please login to proceed, aborted", Snackbar.LENGTH_LONG);
+                    snackbar.setBackgroundTint(ContextCompat.getColor(ViewInternalPasteActivity.this, R.color.red));
+                    snackbar.show();
+                    return;
+                }
+                // rawContent holds the data
+                // saveUnprotectedContent(View view, PastebinAccount account, int visibility, String contentHeader, String pasteTitleString, String pasteTextString, String timestampString) {
+                // savePasswordProtectedContent(View view, PastebinAccount account, int visibility, String contentHeader, String pasteTitleString, String pasteTextString, String timestampString) {
+                // check for visibilityType (PUBLIC or PRIVATE)
+                int pasteVisibility = PastebinPaste.VISIBILITY_PUBLIC;
+                if (visibilityType.equals(InternalStorageUtils.VISIBILITY_TYPE_PRIVATE)) {
+                    pasteVisibility = PastebinPaste.VISIBILITY_PRIVATE;
+                }
+                // check for contentType (ENCRYPTED or UNENCRYPTED)
+                boolean pasteIsEncrypted = false;
+                if (contentType.equals(InternalStorageUtils.ENCRYPTED_CONTENT)) {
+                    pasteIsEncrypted = true;
+                }
+                PasteUtils pasteUtils = new PasteUtils(getApplicationContext());
+                String pasteUrl = pasteUtils.saveUnprotectedContent(this, pasteVisibility,pa)
+            }
+        });
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override

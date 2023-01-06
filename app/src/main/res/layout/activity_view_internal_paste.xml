@@ -81,7 +81,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSync"
+        android:id="@+id/btnVIPSync"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -91,7 +91,8 @@
         app:backgroundTint="@color/orange"
         style="@style/Widget.MaterialComponents.Button.Icon"
         app:icon="@drawable/ic_baseline_sync_24"
-        app:iconGravity="start"/>
+        app:iconGravity="start"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btnVIPSave"

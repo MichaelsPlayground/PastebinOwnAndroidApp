@@ -138,7 +138,13 @@ public class PastesInternalAdapter extends RecyclerView.Adapter<PastesInternalAd
                 intent.putExtra("TIMESTAMP", String.valueOf(mPasteList.get(holder.getAdapterPosition()).getTimestamp()));
                 intent.putExtra("VISIBILITY_TYPE", mPasteList.get(holder.getAdapterPosition()).getVisibilityType());
                 intent.putExtra("CONTENT_TYPE", mPasteList.get(holder.getAdapterPosition()).getContentType());
-                //intent.putExtra("SYNC_STATUS", mPasteList.get(holder.getAdapterPosition()).getContentType());
+                if (fileModel.getUrl().equals(InternalStorageUtils.URL_DEFAULT)) {
+                    Log.i(TAG, "paste is not synced with Pastebin.com");
+                    intent.putExtra("SYNC_STATUS", "UNSYNCED");
+                } else {
+                    Log.i(TAG, "paste is synced with Pastebin.com");
+                    intent.putExtra("SYNC_STATUS", "SYNCED");
+                }
                 mContext.startActivity(intent);
 
 
