@@ -121,7 +121,7 @@ public class ViewInternalPasteActivity extends AppCompatActivity {
                     pasteIsEncrypted = true;
                 }
                 PasteUtils pasteUtils = new PasteUtils(getApplicationContext());
-                String pasteUrl = pasteUtils.saveUnprotectedContent(this, pasteVisibility,pa)
+                //String pasteUrl = pasteUtils.saveUnprotectedContent(this, pasteVisibility,pa)
             }
         });
 
